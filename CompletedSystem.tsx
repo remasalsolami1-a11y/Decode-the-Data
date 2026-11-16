@@ -4,6 +4,8 @@ import { STATIONS, StationMeta, stationById } from './stations';
 import { HOURS, WEEKDAYS, fmtHour, hourLabelAr, round1, staffFor, thu21 } from './dataset';
 import { CONFIG_INFO, crowdLevel, realInputs } from './model';
 import { FEATURE_AR, Project, TIER_LABEL, useProject } from './project';
+import { DataRiver } from './DataRiver';
+import { riverNodes } from './MyDashboard';
 import { StationId, useStore } from './store';
 import { Icon } from './Icon';
 import { Button, Chip, SimLabel, cx } from './ui';
@@ -36,7 +38,7 @@ function Panel({ meta, title, children, wide, id }: { meta?: StationMeta; title:
 }
 
 /** What the participant decided in each station, and what it did — computed, not scripted. */
-function youBuilt(p: Project): Record<StationId, { decision: string; impact: string }> {
+export function youBuilt(p: Project): Record<StationId, { decision: string; impact: string }> {
   const d = p.d;
   return {
     de: {
@@ -123,6 +125,9 @@ export function CompletedSystem() {
                 <TierBadge tier={t as 'best'} className="mt-1" />
               </div>
             ))}
+          </div>
+          <div className="mt-6 max-w-4xl">
+            <DataRiver nodes={riverNodes(state, p)} onSelect={(id) => go(id)} height={140} />
           </div>
           <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs text-white/70">
             <Icon name="eye" size={13} /> البيانات والتوقعات محاكاة تعليمية — ليست توقعات تشغيلية لمطعم حقيقي

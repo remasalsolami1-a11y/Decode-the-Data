@@ -3,7 +3,7 @@ import { ROADMAPS, STATIONS, StationMeta } from './stations';
 import { useProject } from './project';
 import { earnedAchievements } from './Achievements';
 import { useState } from 'react';
-import { StationId, useStore } from './store';
+import { StationId, useStore, firstName } from './store';
 import { Icon } from './Icon';
 import { Button, Card, cx } from './ui';
 
@@ -95,7 +95,7 @@ export function CareerDiscovery() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 sm:py-14 pb-24">
       <div className="text-sm font-semibold text-ink-500 mb-2">اكتشف مسارك</div>
-      <h1 className="text-3xl sm:text-4xl font-bold">وش أكثر شي استمتعت فيه؟</h1>
+      <h1 className="text-3xl sm:text-4xl font-bold">وش أكثر شي استمتعت فيه{firstName(state) ? ` يا ${firstName(state)}` : ''}؟</h1>
       <p className="text-lg text-ink-600 mt-3 max-w-2xl">ما فيه إجابات صح وغلط هنا — نسألك عن تفضيلاتك وأسلوبك في العمل. وناخذ بعين الاعتبار بشكل خفيف وش سويت في الرحلة.</p>
 
       <Card className="p-5 sm:p-6 mt-8">

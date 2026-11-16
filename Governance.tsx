@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { OWNER, STATIONS, stationById } from './stations';
 import { Avatar } from './Avatar';
-import { useStationState, useStore, StationId } from './store';
+import { useStationState, useStore, StationId, firstName } from './store';
 import { Issue, fixAwaitingDecision, useProject } from './project';
 import { Step, StationOutro, StationShell, nextAfter, nextLabelFor, useFastSkip } from './Shell';
 import { Button, Feedback, FeedbackKind, OptionCard, cx, En } from './ui';
@@ -336,7 +336,7 @@ export function Governance() {
           <Avatar c={OWNER} size={56} className="shrink-0" />
           <div className="rounded-2xl rounded-br-sm bg-ink-50 border border-ink-200 px-4 py-3 text-[15px] leading-relaxed">
             <div className="text-xs font-bold text-ink-500 mb-0.5">{OWNER.name}</div>
-            شركة إعلانات تبي أرقام جوالات عملائنا، وبتدفع لنا 15,000 ريال! البيانات عندنا أصلًا… نبيعها؟
+            {firstName(state) ? `${firstName(state)}، ` : ''}شركة إعلانات تبي أرقام جوالات عملائنا، وبتدفع لنا 15,000 ريال! البيانات عندنا أصلًا… نبيعها؟
           </div>
         </div>
         <div className="space-y-2.5">

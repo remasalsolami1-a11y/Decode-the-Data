@@ -15,6 +15,7 @@ import { Ramadan } from './Ramadan';
 import { PresenterBar } from './Shell';
 import { GlossaryHost } from './Glossary';
 import { AchievementWatcher } from './Achievements';
+import { DashboardHost } from './MyDashboard';
 
 const STATION_COMPONENTS: Record<StationId, () => JSX.Element> = {
   de: DataEngineering,
@@ -68,6 +69,7 @@ export default function App() {
         {body}
       </main>
       <GlossaryHost />
+      <DashboardHost />
       <PresenterBar />
       <AchievementWatcher />
     </div>

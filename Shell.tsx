@@ -1,22 +1,31 @@
 import { CSSProperties, ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react';
-import { CHARACTERS, CONCEPTS, STATIONS, StationMeta, stationById } from './stations';
-import { SCREEN_ORDER, STATION_ORDER, StationId, isFast, useStore } from './store';
+import { CHARACTERS, CONCEPTS, STATIONS, StationMeta, greetingFor, stationById } from './stations';
+import { SCREEN_ORDER, STATION_ORDER, StationId, firstName, isFast, useStore } from './store';
 import { Avatar } from './Avatar';
 import { fixAwaitingDecision, useProject } from './project';
 import { Icon } from './Icon';
 import { Button, Card, cx, Modal } from './ui';
+import { CLUB_NAVY, LOGO_MARK } from './logoMark';
+import { DashboardButton } from './MyDashboard';
 
 export function Logo({ light, compact }: { light?: boolean; compact?: boolean }) {
   return (
-    <span className="flex items-center gap-2 font-bold" dir="ltr">
-      <span className={cx('grid place-items-center w-8 h-8 rounded-lg', light ? 'bg-white text-ink-900' : 'bg-ink-900 text-white')}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
-          <path d="M4 18V12M9 18V6M14 18v-8M19 18V9" />
-        </svg>
+    <span className="flex items-center gap-2.5" dir="ltr">
+      <span
+        className={cx('grid place-items-center w-9 h-9 rounded-xl shrink-0', light && 'ring-1 ring-white/20')}
+        style={{ background: CLUB_NAVY }}
+      >
+        <img src={LOGO_MARK} alt="" width={28} height={28} className="w-7 h-7" draggable={false} />
       </span>
-      <span className={cx('tracking-tight text-[15px]', compact && 'hidden sm:inline', light ? 'text-white' : 'text-ink-900')}>
-        Decode<span className="opacity-50">the</span>Data
+      <span
+        className={cx('leading-[1.05] font-black tracking-tight text-[13px] uppercase', compact && 'hidden sm:inline', light ? 'text-white' : 'text-[#1F2754]')}
+        style={{ fontFamily: '"Playfair Display", Georgia, "Times New Roman", serif' }}
+      >
+        Data Science
+        <br />
+        Club
       </span>
+      <span className="sr-only">Data Science Club</span>
     </span>
   );
 }
@@ -55,6 +64,7 @@ export function Header() {
           </ol>
           <span className="hidden sm:inline text-xs text-ink-500 ms-3 tabular-nums">{doneCount}/6</span>
         </nav>
+        <DashboardButton />
         <Button variant="ghost" size="sm" icon="map" onClick={() => go('map')} aria-label="خريطة الرحلة">
           <span className="hidden sm:inline">الخريطة</span>
         </Button>
@@ -154,7 +164,7 @@ export function StationShell({ meta, children }: { meta: StationMeta; children: 
               <div className="text-xs font-bold mb-0.5" style={{ color: meta.color }}>
                 {CHARACTERS[meta.id].name}
               </div>
-              {CHARACTERS[meta.id].greeting}
+              {greetingFor(meta.id, firstName(state))}
             </div>
           </div>
           {isFast(state) && (

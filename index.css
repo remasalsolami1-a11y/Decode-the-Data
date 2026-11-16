@@ -48,3 +48,6 @@ code, pre { font-family: "IBM Plex Mono", ui-monospace, monospace; }
     scroll-behavior: auto !important;
   }
 }
+@keyframes heroFloat { 0%,100% { transform: translate(0,0); opacity: .9 } 50% { transform: translate(6px,-10px); opacity: .5 } }
+.hero-float { animation: heroFloat 6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .hero-float { animation: none } }

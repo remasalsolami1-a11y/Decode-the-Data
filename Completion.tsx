@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { CHARACTERS, OWNER, STATIONS } from './stations';
 import { Avatar } from './Avatar';
 import { Confetti } from './Ramadan';
-import { STATION_ORDER, useStore } from './store';
+import { STATION_ORDER, useStore, firstName } from './store';
 import { Icon } from './Icon';
 import { Button, Card, Modal } from './ui';
 import { Logo } from './Shell';
@@ -45,7 +45,7 @@ export function Completion() {
         <div className="text-2xl mb-2" aria-hidden="true">
           👏 👏 👏
         </div>
-        <h1 className="text-3xl sm:text-5xl font-bold">أكملت الرحلة!</h1>
+        <h1 className="text-3xl sm:text-5xl font-bold">أكملت الرحلة{firstName(state) ? ` يا ${firstName(state)}` : ''}!</h1>
         <p className="text-lg text-ink-600 mt-3 max-w-xl mx-auto">جرّبت عمل ستة تخصصات، وبنيت معهم نظامًا ذكيًا كاملًا — من بيانات فوضوية إلى قرار حقيقي.</p>
       </div>
 

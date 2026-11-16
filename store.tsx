@@ -173,3 +173,6 @@ export function isUnlocked(state: AppState, id: StationId) {
   const i = STATION_ORDER.indexOf(id);
   return i === 0 || !!state.completed[STATION_ORDER[i - 1]] || !!state.completed[id];
 }
+
+/** the participant's first name (for characters to address them), or '' */
+export const firstName = (state: Pick<AppState, 'name'>) => (state.name ?? '').trim().split(/\s+/)[0]?.slice(0, 20) ?? '';

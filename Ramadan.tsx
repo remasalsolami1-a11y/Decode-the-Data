@@ -2,7 +2,7 @@ import { CSSProperties, useMemo, useState } from 'react';
 import { CHARACTERS, OWNER, STATIONS } from './stations';
 import { HOURS, RAMADAN, RAMADAN_TEST, RAMADAN_TRAIN, WEEKDAYS, dateAr, fmtHour, mean, round1, staffFor } from './dataset';
 import { ramadanModels } from './model';
-import { useStore, AppState } from './store';
+import { useStore, AppState, firstName } from './store';
 import { useProject } from './project';
 import { Avatar } from './Avatar';
 import { BarChart, LineChart } from './charts';
@@ -57,7 +57,7 @@ export function Ramadan() {
             <Avatar c={OWNER} size={64} mood="worried" bg="#ffffff22" className="shrink-0" />
             <div className="rounded-2xl rounded-br-sm bg-white text-ink-900 px-4 py-3 text-[15px] leading-relaxed">
               <div className="text-xs font-bold text-rose-600 mb-0.5">{OWNER.name} · صاحبة المطعم</div>
-              أمس الساعة 2 الظهر النظام قال «زحمة» وجهزنا الموظفين… والمطعم فاضي! وعند الفطور انفجر علينا وما لحقنا. وش صار للنموذج؟!
+              {firstName(state) ? `${firstName(state)}! ` : ''}أمس الساعة 2 الظهر النظام قال «زحمة» وجهزنا الموظفين… والمطعم فاضي! وعند الفطور انفجر علينا وما لحقنا. وش صار للنموذج؟!
             </div>
           </div>
           {step === 0 && (

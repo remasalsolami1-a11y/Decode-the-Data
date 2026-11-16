@@ -275,3 +275,11 @@ export const CONCEPTS: Record<StationId, { title: string; simple: string; deeper
     pro: 'أدوات: كتالوج البيانات، أدوات جودة البيانات، سياسات الوصول.',
   },
 };
+
+/** a station character's opening line, addressing the participant by name when we have it */
+export function greetingFor(id: keyof typeof CHARACTERS, name: string): string {
+  const g = CHARACTERS[id].greeting;
+  if (!name) return g;
+  if (g.startsWith('أهلًا بك.')) return g.replace('أهلًا بك.', `أهلًا ${name}!`);
+  return `${name}، ${g}`;
+}

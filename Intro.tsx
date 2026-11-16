@@ -1,53 +1,83 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { CHARACTERS, OWNER, STATIONS } from './stations';
 import { Avatar } from './Avatar';
-import { STATS, hourLabelAr, WEEKDAYS } from './dataset';
-import { isUnlocked, Mode, STATION_ORDER, useStore } from './store';
+import { firstName, isUnlocked, Mode, STATION_ORDER, useStore } from './store';
 import { Icon } from './Icon';
 import { Button, Card, cx } from './ui';
 import { Logo } from './Shell';
+import { STATS, hourLabelAr } from './dataset';
+import { CLUB_NAVY, LOGO_MARK } from './logoMark';
+import { DataRiver } from './DataRiver';
+import { riverNodes } from './MyDashboard';
+import { useProject } from './project';
+
+/** "When is DataBite busy?" — the average orders per hour, peak highlighted. A teaser of what the journey uncovers. */
+function BusyHoursTeaser() {
+  const rows = STATS.byHour;
+  const max = Math.max(...rows.map((r) => r.value));
+  const peak = rows.find((r) => r.value === max)!;
+  const short = (h: number) => (h === 12 ? '12ظ' : `${h % 12}م`);
+  return (
+    <section className="max-w-6xl mx-auto px-4 pt-16">
+      <div className="grid lg:grid-cols-[.8fr_1.2fr] gap-8 items-center">
+        <div>
+          <h2 className="text-3xl font-bold">متى يزدحم مطعم DataBite؟</h2>
+          <p className="text-ink-600 mt-3 text-lg leading-relaxed">
+            هذا متوسط عدد الطلبات في كل ساعة، من بيانات المطعم اللي بتشتغل عليها. الذروة واضحة الساعة <b className="text-ink-900">{hourLabelAr(peak.hour)}</b> — بس ليش بعض الليالي أزحم بكثير من غيرها؟ هذا اللي بتكتشفه في الرحلة.
+          </p>
+        </div>
+        <div className="rounded-3xl bg-white border border-ink-200/70 shadow-card p-5 sm:p-6">
+          <div className="flex items-start justify-between gap-3 mb-5">
+            <div>
+              <div className="font-bold">متوسط الطلبات في كل ساعة</div>
+              <div className="text-xs text-ink-500 mt-0.5">كل أيام الأسبوع · 4 أسابيع</div>
+            </div>
+            <span className="shrink-0 rounded-full bg-cyan-50 text-cyan-800 border border-cyan-200 px-3 py-1 text-sm font-bold">الذروة: {hourLabelAr(peak.hour)}</span>
+          </div>
+          <div className="flex items-stretch gap-1 sm:gap-2 h-52 pt-5" dir="ltr" role="img" aria-label={`متوسط الطلبات لكل ساعة، الذروة ${hourLabelAr(peak.hour)} بمتوسط ${Math.round(max)} طلب`}>
+            {rows.map((r) => {
+              const isPeak = r.hour === peak.hour;
+              return (
+                <div key={r.hour} className="flex-1 h-full flex flex-col items-center">
+                  <div className="relative w-full flex-1 flex items-end">
+                    <div className={cx('relative w-full rounded-t-md', isPeak ? 'bg-cyan-500' : 'bg-ink-200')} style={{ height: `${(r.value / max) * 100}%` }} title={`${hourLabelAr(r.hour)}: ${Math.round(r.value)} طلب`}>
+                      {isPeak && <span className="absolute -top-5 inset-x-0 text-center text-xs font-bold text-cyan-700 tabular-nums">{Math.round(r.value)}</span>}
+                    </div>
+                  </div>
+                  <bdi dir="rtl" className={cx('text-[10px] sm:text-[11px] mt-1.5 tabular-nums whitespace-nowrap', isPeak ? 'font-bold text-cyan-700' : 'text-ink-500')}>{short(r.hour)}</bdi>
+                </div>
+              );
+            })}
+          </div>
+          <div className="text-xs text-ink-400 mt-3">ظ = الظهر · م = بعد الظهر والمساء · بيانات تعليمية</div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function HeroVisual() {
-  // animated "crowd over the day" bars built from the real hourly profile
-  const vals = STATS.byHour.map((x) => x.value);
-  const max = Math.max(...vals);
-  const [t, setT] = useState(0);
-  useEffect(() => {
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return setT(1);
-    const id = setTimeout(() => setT(1), 150);
-    return () => clearTimeout(id);
-  }, []);
+  // the club mark, large, with a slow glow and a few drifting "data points"
+  const dots = [
+    [12, 22, 7], [86, 18, 5], [92, 62, 6], [8, 70, 5], [20, 88, 4], [78, 88, 6], [50, 6, 4],
+  ];
   return (
-    <div className="relative rounded-3xl border border-white/10 bg-white/[.04] p-5 backdrop-blur-sm" dir="ltr">
-      <div className="flex items-center justify-between text-white/60 text-xs mb-4 font-mono">
-        <span>databite.orders_by_hour</span>
-        <span className="flex items-center gap-1.5">
-          <i className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> live model
+    <div className="relative mx-auto w-full max-w-[420px] aspect-square" aria-hidden="true">
+      <div className="absolute inset-[12%] rounded-full blur-3xl opacity-50 animate-pulse" style={{ background: 'radial-gradient(#3B6EF5, transparent 70%)', animationDuration: '4s' }} />
+      <div className="absolute inset-[18%] rounded-[2.5rem] border border-white/10 shadow-lift grid place-items-center" style={{ background: CLUB_NAVY }}>
+        <img src={LOGO_MARK} alt="" className="w-[78%] h-[78%] object-contain select-none" draggable={false} />
+      </div>
+      {dots.map(([x, y, r], i) => (
+        <span
+          key={i}
+          className="absolute rounded-full bg-cyan-300/70 hero-float"
+          style={{ left: `${x}%`, top: `${y}%`, width: r * 2, height: r * 2, animationDelay: `${i * 0.7}s`, boxShadow: '0 0 12px rgba(34,211,238,.7)' }}
+        />
+      ))}
+      <div className="absolute bottom-[4%] inset-x-0 text-center">
+        <span className="inline-block rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-white/70 tracking-wide" dir="ltr">
+          Data Science Club
         </span>
-      </div>
-      <div className="flex items-end gap-1.5 h-44">
-        {vals.map((v, i) => (
-          <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
-            <div
-              className="w-full rounded-t-md"
-              style={{
-                height: `${(v / max) * 100 * t}%`,
-                transition: `height .9s cubic-bezier(.2,.8,.2,1) ${i * 60}ms`,
-                background: STATIONS[i % 6].color,
-                opacity: v === max ? 1 : 0.55,
-              }}
-            />
-          </div>
-        ))}
-      </div>
-      <div className="flex justify-between text-[10px] text-white/40 mt-2 font-mono">
-        <span>12:00</span>
-        <span>18:00</span>
-        <span>23:00</span>
-      </div>
-      <div className="absolute -top-4 -left-4 rounded-2xl bg-white text-ink-900 px-3.5 py-2.5 shadow-lift text-right" dir="rtl">
-        <div className="text-[11px] text-ink-500">ذروة متوقعة</div>
-        <div className="font-bold">{hourLabelAr(STATS.peak.hour)} · {WEEKDAYS[STATS.busiestDay]}</div>
       </div>
     </div>
   );
@@ -73,10 +103,6 @@ export function Landing() {
           </div>
           <div className="grid lg:grid-cols-[1.15fr_.85fr] gap-12 items-center">
             <div className="animate-rise">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-sm text-white/80 mb-5">
-                <Icon name="spark" size={14} />
-                6 مسارات · مشروع واحد · 25–45 دقيقة
-              </div>
               <h1 className="font-bold leading-[1.1] tracking-tight">
                 <bdi dir="ltr" className="block text-5xl sm:text-6xl lg:text-7xl">
                   Decode the Data
@@ -116,6 +142,8 @@ export function Landing() {
           </div>
         </div>
       </section>
+
+      <BusyHoursTeaser />
 
       <section id="tracks" className="max-w-6xl mx-auto px-4 py-16 scroll-mt-16">
         <div className="max-w-2xl mb-8">
@@ -162,7 +190,8 @@ export function Landing() {
 }
 
 export function Mission() {
-  const { go } = useStore();
+  const { state, dispatch, go } = useStore();
+  const first = firstName(state);
   const [scene, setScene] = useState(0);
   const scenes = [
     {
@@ -189,8 +218,28 @@ export function Mission() {
         <Avatar c={OWNER} size={72} mood={scene >= 1 ? 'worried' : 'happy'} bg="#FDEDF3" className="shrink-0" />
         <div className="rounded-2xl rounded-br-sm bg-white border border-ink-200 shadow-card px-4 py-3 text-[16px] leading-relaxed">
           <div className="text-xs font-bold text-ink-500 mb-0.5">{OWNER.name} · صاحبة مطعم DataBite في جدة</div>
-          عندي بيانات طلبات أربعة أسابيع، وما أعرف وش أسوي فيها. خلني أحكيك وش صار… اضغط على المشاهد.
+          {first ? (
+            <>أهلًا {first}، تشرفنا! عندي بيانات طلبات أربعة أسابيع، وما أعرف وش أسوي فيها. خلني أحكيك وش صار… اضغط على المشاهد.</>
+          ) : (
+            <>أهلًا وسهلًا! قبل ما أحكيك وش صار في مطعمي… وش اسمك؟</>
+          )}
         </div>
+      </div>
+
+      <div className="mt-4 max-w-2xl rounded-2xl bg-white border border-ink-200 shadow-card p-4">
+        <label htmlFor="mission-name" className="font-bold block mb-2">
+          وش اسمك؟
+        </label>
+        <input
+          id="mission-name"
+          value={state.name}
+          maxLength={40}
+          autoComplete="given-name"
+          onChange={(e) => dispatch({ type: 'set', patch: { name: e.target.value } })}
+          placeholder="اكتب اسمك الأول"
+          className="w-full rounded-xl border-2 border-ink-200 px-4 py-2.5 text-[16px] focus:border-ink-900 focus:outline-none"
+        />
+        <p className="text-xs text-ink-500 mt-2">اختياري — الفريق بيناديك فيه طول الرحلة، ويبقى على جهازك فقط.</p>
       </div>
 
       <div className="grid sm:grid-cols-3 gap-3 mt-8">
@@ -275,6 +324,7 @@ function ModePicker({ onPick }: { onPick: () => void }) {
 
 export function JourneyMap() {
   const { state, go, dispatch } = useStore();
+  const project = useProject();
   const nextUp = STATION_ORDER.find((s) => !state.completed[s]);
   const allDone = !nextUp;
   return (
@@ -312,6 +362,17 @@ export function JourneyMap() {
             {state.completed.de ? 'أكمل المحطة التالية' : 'ابدأ المحطة الأولى'}
           </Button>
         )}
+      </div>
+
+      <div className="relative rounded-3xl bg-ink-950 px-3 sm:px-6 pt-4 pb-3 mb-8 overflow-hidden">
+        <div className="absolute inset-0 opacity-25 pointer-events-none" style={{ backgroundImage: 'linear-gradient(#ffffff10 1px, transparent 1px), linear-gradient(90deg, #ffffff10 1px, transparent 1px)', backgroundSize: '36px 36px' }} />
+        <div className="relative flex items-center justify-between text-xs text-white/60">
+          <span className="font-semibold text-white/80">نهر البيانات</span>
+          <span className="hidden sm:inline">بياناتك تمشي من محطة لمحطة — وأي قرار ضار يلوّث كل اللي بعده</span>
+        </div>
+        <div className="relative">
+          <DataRiver nodes={riverNodes(state, project)} onSelect={(id) => go(id)} canSelect={(id) => isUnlocked(state, id)} height={150} />
+        </div>
       </div>
 
       <ol className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 relative">

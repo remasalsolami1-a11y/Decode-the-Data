@@ -1,0 +1,8 @@
+node_modules
+dist
+dist-single
+.DS_Store
+*.log
+/v2-*.png
+/*.png
+!/public/*.png

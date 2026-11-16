@@ -262,6 +262,21 @@ export function Step({
     const cur = (state.station[stationId] ?? {}) as { noAuto?: number[] };
     dispatch({ type: 'patchStation', id: stationId, patch: { step: n - 1, noAuto: [...new Set([...(cur.noAuto ?? []), n - 1])] } });
   };
+  // sent back by governance → jump straight to the step that needs fixing
+  useEffect(() => {
+    const fix = stationId && (state.station[stationId] as { govFix?: unknown } | undefined)?.govFix;
+    if (fix && visible && !done) {
+      const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+      const t = setTimeout(() => {
+        const el = ref.current;
+        if (!el) return;
+        const y = el.getBoundingClientRect().top + window.scrollY - 200; // leave room for the sticky header + fix banner
+        window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
+      }, 350);
+      return () => clearTimeout(t);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const first = useRef(true);
   useEffect(() => {
     if (first.current) {

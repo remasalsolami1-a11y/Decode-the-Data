@@ -225,8 +225,33 @@ export function audit(p: Omit<Project, 'audit'>): Issue[] {
   const planAr = `خطتك: ${staffAr(outcome.staff)} (${scopeAr})`;
   const needTruth = staffFor(Math.max(...p.eidTruth));
   if (d.bi.staff !== null || d.bi.scope === 'allday') {
-    if (outcome.tier === 'harm')
-      out.push({ id: 'bi-under', station: 'bi', severity: 'critical', fixStep: 3, title: `قرار التوظيف ترك ${upsetAr(outcome.upset)} ليلة العيد`, detail: `${planAr}. أقصى انتظار ${outcome.maxWait} دقيقة، وخسارة تقريبية ${outcome.lostRevenue.toLocaleString('en')} ريال.`, hint: `اضغط «عدّل الخطة» وزِد موظفي المساء. ذروة ليلة العيد الحقيقية كانت تحتاج حوالي ${staffAr(needTruth)}.` });
+    if (outcome.tier === 'harm') {
+      // explain WHY: usually the model under-forecast Eid night (an upstream decision), sometimes the plan ignored the model
+      const fPeak = Math.round(Math.max(...p.eidForecast));
+      const tPeak = Math.round(Math.max(...p.eidTruth));
+      const modelLow = tPeak - fPeak >= 10;
+      const [upstream, where] =
+        d.de.missing === 'zero' ? ['القيم المفقودة اتعوّضت بصفر', 'محطة هندسة البيانات']
+        : !p.features.includes('eid') ? ['خاصية «ليلة العيد» مو ضمن خصائص النموذج', 'محطة علم البيانات']
+        : d.ml.config === 'small' ? ['النموذج تدرّب على أسبوعين بس وما شاف ليلة العيد', 'محطة تعلم الآلة']
+        : d.ml.config === 'same' ? ['النموذج «حفظ» البيانات بدل ما يتعلم', 'محطة تعلم الآلة']
+        : ['قرار سابق في المشروع', 'المحطات السابقة'];
+      const why = [
+        modelLow ? `السبب الأساسي: نموذجك توقع ذروة ${fPeak} طلب والواقع ${tPeak}، لأن ${upstream}. فاللوحة اقترحت ${staffAr(p.recommendedStaff)} بس.` : '',
+        outcome.staff < p.recommendedStaff ? `وفوق هذا، خطتك (${staffAr(outcome.staff)}) أقل حتى من اقتراح نموذجك (${staffAr(p.recommendedStaff)}).` : '',
+      ].filter(Boolean).join(' ');
+      out.push({
+        id: 'bi-under',
+        station: 'bi',
+        severity: 'critical',
+        fixStep: 3,
+        title: `قرار التوظيف ترك ${upsetAr(outcome.upset)} ليلة العيد`,
+        detail: `${planAr}. أقصى انتظار ${outcome.maxWait} دقيقة، وخسارة تقريبية ${outcome.lostRevenue.toLocaleString('en')} ريال. ${why}`.trim(),
+        hint: modelLow
+          ? `الحل الأفضل: صلّح السبب في ${where}، وبعدها ارجع هنا واعتمد اقتراح النموذج. أو بسرعة: اضغط «عدّل الخطة» (تحت المطعم) وزِد موظفي المساء لحوالي ${staffAr(needTruth)}.`
+          : `اضغط «عدّل الخطة» وزِد موظفي المساء لحوالي ${staffAr(needTruth)}.`,
+      });
+    }
     else if (outcome.tier === 'cost' && outcome.upset >= 6)
       out.push({ id: 'bi-tight', station: 'bi', severity: 'warning', fixStep: 3, title: `${outcome.upset} من العملاء انتظروا أكثر من اللازم ليلة العيد`, detail: `${planAr}. أقصى انتظار ${outcome.maxWait} دقيقة — قريب من الحاجة لكنه ناقص قليلًا.`, hint: `اضغط «عدّل الخطة» وزِد موظف أو اثنين للمساء (الذروة كانت تحتاج حوالي ${staffAr(needTruth)}).` });
     else if (outcome.tier === 'cost')

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { stationById } from './stations';
-import { EID_NIGHT, HOURS, HourRecord, PAYDAY_DAY, PROMO_DAYS, SPECIAL_DAYS, Stats, WEEKDAYS, avgByHour, avgByWeekdayHour, dateAr, dayDeviation, fmtHour, hourLabelAr } from './dataset';
+import { EID_NIGHT, HOURS, HourRecord, PAYDAY_DAY, PROMO_DAYS, SPECIAL_DAYS, Stats, WEEKDAYS, avgByHour, avgByWeekdayHour, dateAr, dayDeviation, fmtHour, hourLabelAr, hourShortAr } from './dataset';
 import { conclusionTier, useProject } from './project';
 import { Impact, Inputs } from './Decision';
 import { useStationState, useStore } from './store';
@@ -161,7 +161,7 @@ export function DataAnalysis() {
         <BarChart
           ariaLabel="متوسط الطلبات حسب الساعة"
           values={compareMode ? work.map((x) => x.value) : series.map((x) => x.value)}
-          labels={HOURS.map((h) => String(h))}
+          labels={HOURS.map(hourShortAr)}
           color={meta.color}
           onBarClick={compareMode || st.step !== 0 ? undefined : clickBar}
           compare={compareMode ? { values: weekend.map((x) => x.value), color: '#F59E0B', label: 'نهاية الأسبوع', mainLabel: 'أيام العمل' } : undefined}
@@ -204,7 +204,7 @@ export function DataAnalysis() {
           ariaLabel="خريطة حرارية للطلبات حسب اليوم والساعة"
           matrix={HEAT}
           rowLabels={[...WEEKDAYS]}
-          colLabels={HOURS.map(String)}
+          colLabels={HOURS.map(hourShortAr)}
           color={meta.color}
           selected={st.cell}
           onCell={st.step !== 1 ? undefined : (r, c) => {

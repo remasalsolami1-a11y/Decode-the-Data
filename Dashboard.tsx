@@ -1,4 +1,4 @@
-import { HOURS, WEEKDAYS, dailyTotals, fmtHour, round1, staffFor } from './dataset';
+import { HOURS, WEEKDAYS, dailyTotals, fmtHour, round1, staffFor, hourShortAr } from './dataset';
 import { FeatureId, crowdLevel, realInputs } from './model';
 import { Project, useProject } from './project';
 import { BarChart, Donut, LineChart } from './charts';
@@ -120,7 +120,7 @@ export function DashboardView({
                 الذروة: {crowdLevel(peakFc).label}
               </span>
             </div>
-            <BarChart ariaLabel="توقع الطلبات لليلة العيد" values={fc.map(Math.round)} labels={HOURS.map(String)} color="#E8467C" height={180} highlight={HOURS.indexOf(peakFcHour)} />
+            <BarChart ariaLabel="توقع الطلبات لليلة العيد" values={fc.map(Math.round)} labels={HOURS.map(hourShortAr)} color="#E8467C" height={180} highlight={HOURS.indexOf(peakFcHour)} />
             <div className="text-[11px] text-ink-400 mt-1">من نموذجك في محطة تعلم الآلة · تقديرات تعليمية وليست ضمانات</div>
           </div>
         )}
@@ -128,9 +128,9 @@ export function DashboardView({
           <div className={card}>
             <div className="text-sm font-bold mb-1">متوسط الطلبات حسب الساعة</div>
             {charts.hourly === 'line' ? (
-              <LineChart ariaLabel="متوسط الطلبات حسب الساعة" labels={HOURS.map(String)} series={[{ name: 'متوسط', values: STATS.byHour.map((x) => x.value), color: accent, area: true }]} height={180} />
+              <LineChart ariaLabel="متوسط الطلبات حسب الساعة" labels={HOURS.map(hourShortAr)} series={[{ name: 'متوسط', values: STATS.byHour.map((x) => x.value), color: accent, area: true }]} height={180} />
             ) : (
-              <BarChart ariaLabel="متوسط الطلبات حسب الساعة" values={STATS.byHour.map((x) => x.value)} labels={HOURS.map(String)} color={accent} height={180} />
+              <BarChart ariaLabel="متوسط الطلبات حسب الساعة" values={STATS.byHour.map((x) => x.value)} labels={HOURS.map(hourShortAr)} color={accent} height={180} />
             )}
           </div>
         )}
@@ -138,7 +138,7 @@ export function DashboardView({
           <div className={card}>
             <div className="text-sm font-bold mb-3">الصالة مقابل التوصيل</div>
             {charts.channel === 'bar' ? (
-              <BarChart ariaLabel="الصالة مقابل التوصيل" values={[dinein, delivery]} labels={['Dine-in', 'Delivery']} color={accent} height={160} showValues />
+              <BarChart ariaLabel="الصالة مقابل التوصيل" values={[dinein, delivery]} labels={['الصالة', 'التوصيل']} color={accent} height={160} showValues />
             ) : (
               <Donut
                 ariaLabel="الصالة مقابل التوصيل"

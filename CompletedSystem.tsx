@@ -1,7 +1,7 @@
 import { upsetAr, staffAr } from './sim';
 import { CSSProperties, ReactNode, useState } from 'react';
 import { STATIONS, StationMeta, stationById } from './stations';
-import { HOURS, WEEKDAYS, fmtHour, hourLabelAr, round1, staffFor, thu21 } from './dataset';
+import { HOURS, WEEKDAYS, fmtHour, hourLabelAr, round1, staffFor, thu21, hourShortAr } from './dataset';
 import { CONFIG_INFO, crowdLevel, realInputs } from './model';
 import { FEATURE_AR, Project, TIER_LABEL, useProject } from './project';
 import { DataRiver } from './DataRiver';
@@ -148,7 +148,7 @@ export function CompletedSystem() {
               </div>
               <label className="block">
                 <span className="text-sm font-bold flex justify-between">
-                  الساعة <bdi dir="ltr">{fmtHour(hour)}</bdi>
+                  الساعة {fmtHour(hour)}
                 </span>
                 <input type="range" min={12} max={23} value={hour} onChange={(e) => (setHour(Number(e.target.value)), setStaffOverride(null))} className="w-full accent-[var(--accent)]" dir="ltr" aria-label="الساعة" />
               </label>
@@ -178,7 +178,7 @@ export function CompletedSystem() {
             </div>
             <div className="rounded-2xl p-5 text-center border-2" style={{ borderColor: lvl.color }} aria-live="polite">
               <div className="text-sm text-ink-500">
-                {WEEKDAYS[sc.weekday]} · <bdi dir="ltr">{fmtHour(hour)}</bdi>
+                {WEEKDAYS[sc.weekday]} · {fmtHour(hour)}
               </div>
               <div className="text-5xl font-bold tabular-nums my-1" style={{ color: lvl.color }}>
                 {Math.round(pred)}
@@ -269,7 +269,7 @@ export function CompletedSystem() {
               <div className="text-2xl font-bold tabular-nums">±{ev.realMae.toFixed(1)}</div>
             </div>
           </div>
-          <BarChart ariaLabel="توقع ليلة العيد من نموذجك" values={p.eidForecast.map(Math.round)} labels={HOURS.map(String)} color={S('ml').color} height={140} compare={{ values: p.eidTruth.map(Math.round), color: '#111833', label: 'الطلب الحقيقي', mainLabel: 'توقع نموذجك' }} />
+          <BarChart ariaLabel="توقع ليلة العيد من نموذجك" values={p.eidForecast.map(Math.round)} labels={HOURS.map(hourShortAr)} color={S('ml').color} height={140} compare={{ values: p.eidTruth.map(Math.round), color: '#111833', label: 'الطلب الحقيقي', mainLabel: 'توقع نموذجك' }} />
           <p className="text-sm text-ink-600 mt-2">ليلة العيد: توقع نموذجك مقابل الطلب الحقيقي في المحاكاة.</p>
         </Panel>
 

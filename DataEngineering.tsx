@@ -1,7 +1,7 @@
 import { upsetAr, staffAr } from './sim';
 import { useEffect, useState } from 'react';
 import { stationById } from './stations';
-import { DUPLICATE_COUNT, MISSING_CELLS, MissingStrategy, RAW_DELIVERY, RAW_POS, RAW_ROW_COUNT, SNAPSHOT_ALTERNATIVES, SNAPSHOT_CLEAN, TRUTH, buildDataset, thu21, dateAr, fmtHour, hourLabelAr, mean, round1 } from './dataset';
+import { DUPLICATE_COUNT, MISSING_CELLS, MissingStrategy, RAW_DELIVERY, RAW_POS, RAW_ROW_COUNT, SNAPSHOT_ALTERNATIVES, SNAPSHOT_CLEAN, TRUTH, buildDataset, thu21, dateAr, fmtHour, fmtHour24, hourLabelAr, mean, round1 } from './dataset';
 import { computeProject, decisionsFrom, missingTier, useProject } from './project';
 import { Impact, TierBadge } from './Decision';
 import { Consequence } from './Consequence';
@@ -109,7 +109,7 @@ export function DataEngineering() {
     go(nextAfter('de'));
   };
 
-  const displayTime = (h: number) => (st.timeFmt === '12' ? fmtHour12Ar(h) : fmtHour(h));
+  const displayTime = (h: number) => (st.timeFmt === '12' ? fmtHour12Ar(h) : fmtHour24(h));
 
   return (
     <StationShell meta={meta}>
@@ -142,7 +142,7 @@ export function DataEngineering() {
               ? inspect('dup', `صف الساعة ${fmtHour(r.hour)} مكرر في نظام نقاط البيع — نفس الوقت ونفس الرقم مرتين. لو تركناه بنحسب الطلبات مرتين.`)
               : inspect(null, 'هذا الصف يبدو سليمًا. دقق: هل فيه ساعة تتكرر؟ أو خانة فاضية؟')
           }
-          onPosMissing={() => inspect('missing', 'خانة طلبات الصالة الساعة 21:00 فاضية! غالبًا انقطع الاتصال بالنظام لحظة التصدير.')}
+          onPosMissing={() => inspect('missing', 'خانة طلبات الصالة الساعة 9 مساءً (21:00) فاضية! غالبًا انقطع الاتصال بالنظام لحظة التصدير.')}
           onDelRow={(r) =>
             DUP_HOURS_DEL.has(r.hour)
               ? inspect('dup', `صف ${r.time} مكرر في تطبيق التوصيل.`)
@@ -202,7 +202,7 @@ export function DataEngineering() {
       </Step>
 
       {/* STEP 3 */}
-      <Step n={3} reached={st.step} title="عالج القيم المفقودة" instruction={`في هذه اللقطة خانة 21:00 فاضية — وفي الأسابيع الأربعة كاملة ${MISSING_CELLS.length} خانة مثلها (انقطاع الكاشير وقت الزحمة). قرارك هنا يُطبَّق عليها كلها ويمشي لباقي المشروع.`}>
+      <Step n={3} reached={st.step} title="عالج القيم المفقودة" instruction={`في هذه اللقطة خانة الساعة 9 مساءً فاضية — وفي الأسابيع الأربعة كاملة ${MISSING_CELLS.length} خانة مثلها (انقطاع الكاشير وقت الزحمة). قرارك هنا يُطبَّق عليها كلها ويمشي لباقي المشروع.`}>
         <div className="flex items-center gap-3 rounded-xl bg-ink-50 border border-ink-200 px-4 py-3 mb-4 w-fit" dir="ltr">
           <span className="font-mono text-sm text-ink-600">{MISSING_TS}</span>
           <span className="text-ink-300">│</span>
@@ -292,7 +292,7 @@ export function DataEngineering() {
         {st.timeFmt && (
           <div className="grid sm:grid-cols-2 gap-3 animate-rise">
             {[
-              { title: 'نقاط البيع — قبل/بعد', rows: SNAPSHOT_CLEAN.map((r) => [`${r.date} ${fmtHour(r.hour)}`, `الخميس · ${displayTime(r.hour)}`]) },
+              { title: 'نقاط البيع — قبل/بعد', rows: SNAPSHOT_CLEAN.map((r) => [`${r.date} ${fmtHour24(r.hour)}`, `الخميس · ${displayTime(r.hour)}`]) },
               { title: 'التوصيل — قبل/بعد', rows: SNAPSHOT_CLEAN.map((r) => [`Thu ${RAW_DELIVERY.find((d) => d.hour === r.hour)!.time}`, `الخميس · ${displayTime(r.hour)}`]) },
             ].map((t) => (
               <div key={t.title} className="rounded-xl border border-ink-200 overflow-hidden">

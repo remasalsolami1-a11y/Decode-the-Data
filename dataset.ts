@@ -249,15 +249,27 @@ export function correlation(xs: number[], ys: number[]) {
   }
   return num / Math.sqrt(dx * dy);
 }
-export const fmtHour = (h: number) => `${String(h).padStart(2, '0')}:00`;
+/** 24-hour clock — only for raw data tables (the format lesson in station 1) */
+export const fmtHour24 = (h: number) => `${String(h).padStart(2, '0')}:00`;
+/** the time as people say it in Arabic: «9 مساءً» */
+export const fmtHour = (h: number) => hourLabelAr(h);
 export const fmtHour12 = (h: number) => {
   const hh = h % 12 === 0 ? 12 : h % 12;
   return `${hh}:00 ${h >= 12 ? 'PM' : 'AM'}`;
 };
 export const hourLabelAr = (h: number) => {
-  const hh = h % 12 === 0 ? 12 : h % 12;
-  const part = h < 15 ? 'ظهرًا' : h < 18 ? 'عصرًا' : 'مساءً';
+  const x = ((h % 24) + 24) % 24;
+  if (x === 0) return '12 منتصف الليل';
+  const hh = x % 12 === 0 ? 12 : x % 12;
+  const part = x < 5 ? 'الفجر' : x < 12 ? 'صباحًا' : x < 15 ? 'ظهرًا' : x < 18 ? 'عصرًا' : 'مساءً';
   return `${hh} ${part}`;
+};
+/** compact Arabic hour for chart axes: 12ظ, 1م … 11م */
+export const hourShortAr = (h: number) => {
+  const x = ((h % 24) + 24) % 24;
+  if (x === 12) return '12ظ';
+  if (x === 0) return '12ل';
+  return x < 12 ? `${x}ص` : `${x - 12}م`;
 };
 export const staffFor = (orders: number) => Math.max(2, Math.ceil(orders / ORDERS_PER_STAFF));
 
@@ -375,7 +387,7 @@ export interface RawDelRow { key: string; time: string; day: string; hour: numbe
 export const RAW_POS: RawPosRow[] = (() => {
   const rows: RawPosRow[] = snap.map((r) => ({
     key: `p${r.hour}`,
-    ts: `${r.date} ${fmtHour(r.hour)}`,
+    ts: `${r.date} ${fmtHour24(r.hour)}`,
     hour: r.hour,
     dinein: r.hour === MISSING_CELL.hour ? null : r.dinein,
     missing: r.hour === MISSING_CELL.hour,

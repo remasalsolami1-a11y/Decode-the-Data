@@ -1,7 +1,7 @@
 import { staffAr } from './sim';
 import { useEffect, useMemo, useState } from 'react';
 import { stationById } from './stations';
-import { HOURS, WEEKDAYS, WEEKDAYS_EN, fmtHour, round1, staffFor } from './dataset';
+import { HOURS, WEEKDAYS, WEEKDAYS_EN, fmtHour, round1, staffFor, hourShortAr } from './dataset';
 import { CONFIG_INFO, FeatureId, TrainConfig, crowdLevel, realInputs, runModel } from './model';
 import { FEATURE_AR, computeProject, configTier, decisionsFrom, useProject } from './project';
 import { Impact, Inputs } from './Decision';
@@ -298,7 +298,7 @@ export function MLEngineering() {
           </div>
           <LineChart
             ariaLabel="التوقع مقابل الواقع"
-            labels={HOURS.map(String)}
+            labels={HOURS.map(hourShortAr)}
             series={[
               { name: 'الواقع', values: testDayPairs.map((p) => p.r.orders), color: '#111833' },
               { name: 'توقع النموذج', values: testDayPairs.map((p) => round1(p.pred)), color: meta.color, dashed: true },
@@ -382,7 +382,7 @@ export function MLEngineering() {
             {st.predicted ? (
               <div className="animate-pop" key={`${st.wd}-${st.hour}-${st.promo}-${st.event}`}>
                 <div className="text-sm text-ink-500">
-                  {WEEKDAYS[st.wd]} · <bdi dir="ltr">{fmtHour(st.hour)}</bdi>
+                  {WEEKDAYS[st.wd]} · {fmtHour(st.hour)}
                 </div>
                 <div className="text-5xl font-bold tabular-nums my-2" style={{ color: level.color }}>
                   {Math.round(pred)}
@@ -505,7 +505,7 @@ function PhoneMock({ wd, on, model }: { wd: number; on: boolean; model: { predic
         </div>
         {on ? (
           <div className="mt-3 rounded-xl bg-emerald-50 text-emerald-900 text-xs p-2.5 animate-rise">
-            💡 أهدأ وقت للزيارة: <b dir="ltr">{fmtHour(best)}</b>
+            💡 أهدأ وقت للزيارة: <b>{fmtHour(best)}</b>
           </div>
         ) : (
           <div className="mt-3 rounded-xl bg-ink-50 text-ink-400 text-xs p-2.5">الخاصية غير مفعّلة بعد</div>

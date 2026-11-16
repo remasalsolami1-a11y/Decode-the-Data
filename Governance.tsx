@@ -290,17 +290,24 @@ export function Governance() {
       </Step>
 
       <Step n={3} skipped={skipped(3)} reached={st.step} title="عالج مشكلة جودة" instruction="وصلت دفعة بيانات جديدة لهذا الأسبوع. فيها شي غريب — كيف نتعامل معه؟">
-        <div className="rounded-xl border border-ink-200 overflow-hidden mb-4 text-sm font-mono" dir="ltr">
+        <div className="rounded-xl border border-ink-200 overflow-hidden mb-4 text-sm">
+          <div className="grid grid-cols-3 px-4 py-2 bg-ink-50 text-xs font-bold text-ink-500 border-b border-ink-100">
+            <span>اليوم</span>
+            <span>الساعة</span>
+            <span>الطلبات</span>
+          </div>
           {[
-            ['Tue', '20:00', '41', false],
-            ['Tue', '03:00', '950', true],
-            ['Wed', '13:00', '27', false],
-            ['Wed', '20:00', '-4', true],
+            ['الثلاثاء', '8 مساءً', '41', false],
+            ['الثلاثاء', '3 الفجر', '950', true],
+            ['الأربعاء', '1 ظهرًا', '27', false],
+            ['الأربعاء', '8 مساءً', '-4', true],
           ].map(([d, h, o, bad]) => (
             <div key={`${d}${h}`} className={cx('grid grid-cols-3 px-4 py-2 border-b border-ink-100 last:border-0', bad && 'bg-rose-50 text-rose-700 font-bold')}>
               <span>{d as string}</span>
               <span>{h as string}</span>
-              <span>{o as string} orders</span>
+              <span className="tabular-nums">
+                <bdi dir="ltr">{o as string}</bdi> طلب
+              </span>
             </div>
           ))}
         </div>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { stationById } from './stations';
-import { HOURS, Stats, HourRecord, avgByHour, dateAr, mean, round1 } from './dataset';
+import { HOURS, Stats, HourRecord, avgByHour, dateAr, mean, round1, hourShortAr } from './dataset';
 import { BEST_FEATURES, runModel, realInputs } from './model';
 import { Approach as PApproach, FEATURE_AR, computeProject, decisionsFrom, effectiveFeatures, featuresTier, useProject } from './project';
 import { Impact } from './Decision';
@@ -337,7 +337,7 @@ export function DataScience() {
           <div className="mt-4 animate-rise" key={st.approach}>
             <LineChart
               ariaLabel="مقارنة التوقع بالواقع"
-              labels={HOURS.map(String)}
+              labels={HOURS.map(hourShortAr)}
               series={[
                 { name: 'الواقع', values: sample.map((r) => r.orders), color: '#111833' },
                 { name: 'توقع المنهج', values: approachPred(st.approach), color: meta.color, dashed: true },
@@ -429,7 +429,7 @@ function VariableView({ id, DATA, STATS }: { id: VarId; DATA: HourRecord[]; STAT
     return (
       <>
         <p className="text-sm text-ink-600 mb-2">متوسط الطلبات لكل ساعة — الفرق كبير جدًا بين الساعات.</p>
-        <BarChart ariaLabel="الطلبات حسب الساعة" values={v.map((x) => x.value)} labels={v.map((x) => String(x.hour))} color={meta.color} height={180} />
+        <BarChart ariaLabel="الطلبات حسب الساعة" values={v.map((x) => x.value)} labels={v.map((x) => hourShortAr(x.hour))} color={meta.color} height={180} />
       </>
     );
   }

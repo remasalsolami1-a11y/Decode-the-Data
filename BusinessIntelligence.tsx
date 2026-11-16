@@ -310,7 +310,7 @@ export function BusinessIntelligence() {
           <div className="inline-flex rounded-xl border border-ink-200 bg-white p-1 text-sm" role="radiogroup" aria-label="فترة الموظفين الإضافيين">
             {(
               [
-                ['evening', 'المساء فقط (18:00–00:00)'],
+                ['evening', 'المساء فقط (6 مساءً – 12 الليل)'],
                 ['allday', 'اليوم كامل'],
               ] as [Scope, string][]
             ).map(([k, l]) => (
@@ -319,7 +319,7 @@ export function BusinessIntelligence() {
               </button>
             ))}
           </div>
-          <span className="text-xs text-ink-500">تكلفة رواتب يوم العيد (12:00–00:00): {trialOutcome.labor.toLocaleString('en')} ريال</span>
+          <span className="text-xs text-ink-500">تكلفة رواتب يوم العيد (من 12 الظهر لين 12 الليل): {trialOutcome.labor.toLocaleString('en')} ريال</span>
         </div>
         <LiveRestaurant hour={peakHour} orders={peak} staff={trialStaff} eid caption={`المعاينة حسب توقع نموذجك (${Math.round(peak)} طلب) — الليلة الحقيقية قد تختلف`} />
         <div className="mt-4 space-y-3">

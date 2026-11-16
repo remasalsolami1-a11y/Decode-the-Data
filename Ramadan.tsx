@@ -1,6 +1,6 @@
 import { CSSProperties, useMemo, useState } from 'react';
 import { CHARACTERS, OWNER, STATIONS } from './stations';
-import { HOURS, RAMADAN, RAMADAN_TEST, RAMADAN_TRAIN, WEEKDAYS, dateAr, fmtHour, mean, round1, staffFor } from './dataset';
+import { HOURS, RAMADAN, RAMADAN_TEST, RAMADAN_TRAIN, WEEKDAYS, dateAr, fmtHour, mean, round1, staffFor, hourShortAr } from './dataset';
 import { ramadanModels } from './model';
 import { useStore, AppState, firstName } from './store';
 import { useProject } from './project';
@@ -77,7 +77,7 @@ export function Ramadan() {
           </p>
           <LineChart
             ariaLabel="توقع النموذج القديم مقابل الواقع في أول يوم رمضان"
-            labels={HOURS.map(String)}
+            labels={HOURS.map(hourShortAr)}
             series={[
               { name: 'الواقع في رمضان', values: day1.map((r) => r.orders), color: '#111833' },
               { name: 'توقع النموذج القديم', values: day1.map((r) => round1(R.before.predict(r))), color: '#E11D48', dashed: true },
@@ -132,7 +132,7 @@ export function Ramadan() {
             <BarChart
               ariaLabel="متوسط الطلبات في رمضان حسب الساعة"
               values={avgR}
-              labels={HOURS.map(String)}
+              labels={HOURS.map(hourShortAr)}
               color={STATIONS[1].color}
               onBarClick={step === 2 ? clickPeak : undefined}
               highlight={boss.peaks.length ? (HOURS as readonly number[]).indexOf(boss.peaks[boss.peaks.length - 1]) : undefined}
@@ -168,7 +168,7 @@ export function Ramadan() {
             {step === 3 ? (
               <div className="mt-4">
                 <Button variant="accent" icon="play" onClick={() => setBoss({ step: 4 })}>
-                  Retrain Model
+                  أعد تدريب النموذج
                 </Button>
               </div>
             ) : (
@@ -186,7 +186,7 @@ export function Ramadan() {
                 <div className="mt-4">
                   <LineChart
                     ariaLabel="النموذج الجديد مقابل الواقع"
-                    labels={HOURS.map(String)}
+                    labels={HOURS.map(hourShortAr)}
                     series={[
                       { name: `الواقع (${WEEKDAYS[checkDay[0].weekday]} ${dateAr(checkDay[0].date)})`, values: checkDay.map((r) => r.orders), color: '#111833' },
                       { name: 'النموذج الجديد', values: checkDay.map((r) => round1(R.after.predict(r))), color: ml.color, dashed: true },
@@ -208,7 +208,7 @@ export function Ramadan() {
               <p className="text-ink-600 mt-1 mb-4">حرّك الساعة وشوف ليلة رمضانية في المطعم — النظام جهّز العدد المناسب من الموظفين.</p>
               <label htmlFor="rh" className="text-sm font-bold flex justify-between mb-1">
                 <span>الساعة</span>
-                <span dir="ltr">{fmtHour(hour)}</span>
+                <span>{fmtHour(hour)}</span>
               </label>
               <input id="rh" type="range" min={12} max={23} value={hour} onChange={(e) => setHour(Number(e.target.value))} className="w-full mb-4" dir="ltr" />
               <LiveRestaurant hour={hour} orders={predAfter} staff={staffFor(predAfter)} ramadan caption="رمضان · عدد الموظفين حسب توقع النموذج الجديد" />

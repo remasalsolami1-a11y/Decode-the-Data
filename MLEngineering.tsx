@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
-import { stationById } from '../data/stations';
-import { HOURS, WEEKDAYS, WEEKDAYS_EN, fmtHour, round1, staffFor } from '../data/dataset';
-import { CONFIG_INFO, FeatureId, TrainConfig, crowdLevel, realInputs, runModel } from '../data/model';
-import { FEATURE_AR, computeProject, configTier, decisionsFrom, useProject } from '../data/project';
-import { Impact, Inputs } from '../components/Decision';
-import { Consequence } from '../components/Consequence';
-import { useStationState, useStore } from '../state/store';
-import { Step, StationOutro, StationShell, nextAfter, nextLabelFor, useFastSkip } from '../components/Shell';
-import { LiveRestaurant } from '../components/LiveRestaurant';
-import { Button, Chip, Feedback, FeedbackKind, GovTip, OptionCard, SimLabel, Stat, cx, En } from '../components/ui';
-import { LineChart } from '../components/charts';
-import { Icon } from '../components/Icon';
+import { stationById } from './stations';
+import { HOURS, WEEKDAYS, WEEKDAYS_EN, fmtHour, round1, staffFor } from './dataset';
+import { CONFIG_INFO, FeatureId, TrainConfig, crowdLevel, realInputs, runModel } from './model';
+import { FEATURE_AR, computeProject, configTier, decisionsFrom, useProject } from './project';
+import { Impact, Inputs } from './Decision';
+import { Consequence } from './Consequence';
+import { useStationState, useStore } from './store';
+import { Step, StationOutro, StationShell, nextAfter, nextLabelFor, useFastSkip } from './Shell';
+import { LiveRestaurant } from './LiveRestaurant';
+import { Button, Chip, Feedback, FeedbackKind, GovTip, OptionCard, SimLabel, Stat, cx, En } from './ui';
+import { LineChart } from './charts';
+import { Icon } from './Icon';
 
 const meta = stationById('ml');
 type Snip = 'a' | 'b' | 'c';

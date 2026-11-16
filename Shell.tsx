@@ -1,8 +1,8 @@
 import { CSSProperties, ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react';
-import { CHARACTERS, CONCEPTS, STATIONS, StationMeta, stationById } from '../data/stations';
-import { SCREEN_ORDER, STATION_ORDER, StationId, isFast, useStore } from '../state/store';
+import { CHARACTERS, CONCEPTS, STATIONS, StationMeta, stationById } from './stations';
+import { SCREEN_ORDER, STATION_ORDER, StationId, isFast, useStore } from './store';
 import { Avatar } from './Avatar';
-import { useProject } from '../data/project';
+import { useProject } from './project';
 import { Icon } from './Icon';
 import { Button, Card, cx, Modal } from './ui';
 

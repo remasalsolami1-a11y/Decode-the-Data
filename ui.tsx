@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, CSSProperties, ReactNode, forwardRef, useEffect, 
 import { findTerm, openGlossary } from './Glossary';
 import { createPortal } from 'react-dom';
 import { Icon } from './Icon';
-import type { IconName } from '../data/stations';
+import type { IconName } from './stations';
 
 export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ');
 

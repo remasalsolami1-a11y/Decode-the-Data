@@ -17,7 +17,7 @@ import {
 } from './dataset';
 import { BEST_FEATURES, FeatureId, ModelRun, TrainConfig, realInputs, runModel } from './model';
 import { WAGE_SAR_PER_HOUR, simulate } from './sim';
-import { AppState, StationId, useStore } from '../state/store';
+import { AppState, StationId, useStore } from './store';
 
 export type Tier = 'best' | 'cost' | 'harm';
 export type Approach = 'overall' | 'hourly' | 'combined';

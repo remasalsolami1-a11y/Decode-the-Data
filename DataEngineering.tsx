@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { stationById } from '../data/stations';
-import { DUPLICATE_COUNT, MISSING_CELLS, MissingStrategy, RAW_DELIVERY, RAW_POS, RAW_ROW_COUNT, SNAPSHOT_ALTERNATIVES, SNAPSHOT_CLEAN, TRUTH, buildDataset, thu21, dateAr, fmtHour, hourLabelAr, mean, round1 } from '../data/dataset';
-import { computeProject, decisionsFrom, missingTier, useProject } from '../data/project';
-import { Impact, TierBadge } from '../components/Decision';
-import { Consequence } from '../components/Consequence';
-import { useStationState, useStore } from '../state/store';
-import { Step, StationOutro, StationShell, nextAfter, nextLabelFor, useFastSkip } from '../components/Shell';
-import { Button, Feedback, FeedbackKind, GovTip, OptionCard, cx, En } from '../components/ui';
-import { Icon } from '../components/Icon';
+import { stationById } from './stations';
+import { DUPLICATE_COUNT, MISSING_CELLS, MissingStrategy, RAW_DELIVERY, RAW_POS, RAW_ROW_COUNT, SNAPSHOT_ALTERNATIVES, SNAPSHOT_CLEAN, TRUTH, buildDataset, thu21, dateAr, fmtHour, hourLabelAr, mean, round1 } from './dataset';
+import { computeProject, decisionsFrom, missingTier, useProject } from './project';
+import { Impact, TierBadge } from './Decision';
+import { Consequence } from './Consequence';
+import { useStationState, useStore } from './store';
+import { Step, StationOutro, StationShell, nextAfter, nextLabelFor, useFastSkip } from './Shell';
+import { Button, Feedback, FeedbackKind, GovTip, OptionCard, cx, En } from './ui';
+import { Icon } from './Icon';
 
 const meta = stationById('de');
 type Issue = 'dup' | 'missing' | 'format';

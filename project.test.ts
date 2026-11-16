@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { BEST_FEATURES } from '../model';
-import { buildDataset, thu21, TRUTH } from '../dataset';
-import { Decisions, computeProject, decisionsFrom, eidOutcome } from '../project';
+import { BEST_FEATURES } from './model';
+import { buildDataset, thu21, TRUTH } from './dataset';
+import { Decisions, computeProject, decisionsFrom, eidOutcome } from './project';
 
 const base = (): Decisions => ({
   de: { missing: 'sameSlot', timeFmt: '24' },
@@ -104,7 +104,7 @@ describe('reading decisions from saved state', () => {
   });
 });
 
-import { migrate } from '../../state/store';
+import { migrate } from './store';
 describe('saved progress migration', () => {
   it('migrates v2 progress without losing completed stations', () => {
     const m = migrate({ v: 2, screen: 'bi', mode: 'workshop', completed: { de: true, da: true, ds: true, ml: true, bi: true }, station: { ds: { featureOk: true, features: ['hour'] }, bi: { step: 4, decision: 'evening' } }, outputs: {}, career: { ratings: {}, picks: {} }, name: 'سارة', presenter: false, boss: { step: 0, peaks: [] } });

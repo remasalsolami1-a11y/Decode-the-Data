@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { DUPLICATE_COUNT, MISSING_CELLS, RAW_ROW_COUNT, WEEKDAYS, fmtHour } from '../data/dataset';
-import { CONFIG_INFO } from '../data/model';
-import { FEATURE_AR, Project, traceNumber } from '../data/project';
-import { STATIONS } from '../data/stations';
+import { DUPLICATE_COUNT, MISSING_CELLS, RAW_ROW_COUNT, WEEKDAYS, fmtHour } from './dataset';
+import { CONFIG_INFO } from './model';
+import { FEATURE_AR, Project, traceNumber } from './project';
+import { STATIONS } from './stations';
 import { Icon } from './Icon';
 import { cx } from './ui';
 

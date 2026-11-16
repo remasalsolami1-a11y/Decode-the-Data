@@ -1,6 +1,6 @@
-import { HOURS, WEEKDAYS, dailyTotals, fmtHour, round1, staffFor } from '../data/dataset';
-import { FeatureId, crowdLevel, realInputs } from '../data/model';
-import { Project, useProject } from '../data/project';
+import { HOURS, WEEKDAYS, dailyTotals, fmtHour, round1, staffFor } from './dataset';
+import { FeatureId, crowdLevel, realInputs } from './model';
+import { Project, useProject } from './project';
 import { BarChart, Donut, LineChart } from './charts';
 
 export type WidgetId = 'kpis' | 'forecast' | 'hourly' | 'channel' | 'trend' | 'raw';

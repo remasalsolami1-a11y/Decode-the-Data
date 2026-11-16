@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Tier, TIER_COLOR, TIER_LABEL } from '../data/project';
+import { Tier, TIER_COLOR, TIER_LABEL } from './project';
 import { cx } from './ui';
 
 export function TierBadge({ tier, className }: { tier: Tier; className?: string }) {

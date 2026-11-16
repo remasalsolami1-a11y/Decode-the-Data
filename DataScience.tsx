@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
-import { stationById } from '../data/stations';
-import { HOURS, Stats, HourRecord, avgByHour, dateAr, mean, round1 } from '../data/dataset';
-import { BEST_FEATURES, runModel, realInputs } from '../data/model';
-import { Approach as PApproach, FEATURE_AR, computeProject, decisionsFrom, effectiveFeatures, featuresTier, useProject } from '../data/project';
-import { Impact } from '../components/Decision';
-import { Consequence } from '../components/Consequence';
-import { FeatureId } from '../data/model';
-import { useStationState, useStore } from '../state/store';
-import { Step, StationOutro, StationShell, nextAfter, nextLabelFor, useFastSkip } from '../components/Shell';
-import { Button, Chip, Feedback, FeedbackKind, GovTip, OptionCard, cx, En } from '../components/ui';
-import { BarChart, LineChart, Scatter } from '../components/charts';
-import { Icon } from '../components/Icon';
+import { stationById } from './stations';
+import { HOURS, Stats, HourRecord, avgByHour, dateAr, mean, round1 } from './dataset';
+import { BEST_FEATURES, runModel, realInputs } from './model';
+import { Approach as PApproach, FEATURE_AR, computeProject, decisionsFrom, effectiveFeatures, featuresTier, useProject } from './project';
+import { Impact } from './Decision';
+import { Consequence } from './Consequence';
+import { FeatureId } from './model';
+import { useStationState, useStore } from './store';
+import { Step, StationOutro, StationShell, nextAfter, nextLabelFor, useFastSkip } from './Shell';
+import { Button, Chip, Feedback, FeedbackKind, GovTip, OptionCard, cx, En } from './ui';
+import { BarChart, LineChart, Scatter } from './charts';
+import { Icon } from './Icon';
 
 const meta = stationById('ds');
 

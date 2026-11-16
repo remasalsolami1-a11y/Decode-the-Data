@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { CHARACTERS, OWNER, STATIONS } from '../data/stations';
-import { Avatar } from '../components/Avatar';
+import { CHARACTERS, OWNER, STATIONS } from './stations';
+import { Avatar } from './Avatar';
 import { Confetti } from './Ramadan';
-import { STATION_ORDER, useStore } from '../state/store';
-import { Icon } from '../components/Icon';
-import { Button, Card, Modal } from '../components/ui';
-import { Logo } from '../components/Shell';
+import { STATION_ORDER, useStore } from './store';
+import { Icon } from './Icon';
+import { Button, Card, Modal } from './ui';
+import { Logo } from './Shell';
 import { computeScores, signalsFrom } from './CareerDiscovery';
-import { useProject } from '../data/project';
-import { earnedAchievements, Achievements } from '../components/Achievements';
+import { useProject } from './project';
+import { earnedAchievements, Achievements } from './Achievements';
 
 export function Completion() {
   const { state, dispatch, go } = useStore();

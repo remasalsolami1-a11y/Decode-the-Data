@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { featuresTier, useProject, Project } from '../data/project';
-import { AppState, useStore } from '../state/store';
+import { featuresTier, useProject, Project } from './project';
+import { AppState, useStore } from './store';
 import { cx } from './ui';
 
 export interface Achievement {

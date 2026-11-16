@@ -1,4 +1,4 @@
-import type { IconName } from '../data/stations';
+import type { IconName } from './stations';
 
 const P: Record<IconName, string> = {
   pipe: 'M4 6h10a3 3 0 0 1 3 3v0a3 3 0 0 0 3 3h0M4 12h6M4 18h10a3 3 0 0 0 3-3M2 4v4M2 10v4M2 16v4',

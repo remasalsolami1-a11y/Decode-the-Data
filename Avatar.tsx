@@ -1,4 +1,4 @@
-import type { Character } from '../data/stations';
+import type { Character } from './stations';
 
 /** Original, friendly team characters drawn in SVG (no external art). */
 export function Avatar({

@@ -1,13 +1,13 @@
 import { CSSProperties, useMemo, useState } from 'react';
-import { CHARACTERS, OWNER, STATIONS } from '../data/stations';
-import { HOURS, RAMADAN, RAMADAN_TEST, RAMADAN_TRAIN, WEEKDAYS, dateAr, fmtHour, mean, round1, staffFor } from '../data/dataset';
-import { ramadanModels } from '../data/model';
-import { useStore, AppState } from '../state/store';
-import { useProject } from '../data/project';
-import { Avatar } from '../components/Avatar';
-import { BarChart, LineChart } from '../components/charts';
-import { Button, Card, Feedback, cx, En } from '../components/ui';
-import { LiveRestaurant } from '../components/LiveRestaurant';
+import { CHARACTERS, OWNER, STATIONS } from './stations';
+import { HOURS, RAMADAN, RAMADAN_TEST, RAMADAN_TRAIN, WEEKDAYS, dateAr, fmtHour, mean, round1, staffFor } from './dataset';
+import { ramadanModels } from './model';
+import { useStore, AppState } from './store';
+import { useProject } from './project';
+import { Avatar } from './Avatar';
+import { BarChart, LineChart } from './charts';
+import { Button, Card, Feedback, cx, En } from './ui';
+import { LiveRestaurant } from './LiveRestaurant';
 
 const IFTAR = 18;
 const SUHOOR = 23;

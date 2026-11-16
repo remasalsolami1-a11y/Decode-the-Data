@@ -1,20 +1,20 @@
 import { useEffect } from 'react';
-import { Header } from './components/Shell';
-import { Landing, Mission, JourneyMap } from './screens/Intro';
-import { isUnlocked, StationId, STATION_ORDER, useStore } from './state/store';
-import { DataEngineering } from './stations/DataEngineering';
-import { DataAnalysis } from './stations/DataAnalysis';
-import { DataScience } from './stations/DataScience';
-import { MLEngineering } from './stations/MLEngineering';
-import { BusinessIntelligence } from './stations/BusinessIntelligence';
-import { Governance } from './stations/Governance';
-import { CompletedSystem } from './screens/CompletedSystem';
-import { CareerDiscovery } from './screens/CareerDiscovery';
-import { Completion } from './screens/Completion';
-import { Ramadan } from './screens/Ramadan';
-import { PresenterBar } from './components/Shell';
-import { GlossaryHost } from './components/Glossary';
-import { AchievementWatcher } from './components/Achievements';
+import { Header } from './Shell';
+import { Landing, Mission, JourneyMap } from './Intro';
+import { isUnlocked, StationId, STATION_ORDER, useStore } from './store';
+import { DataEngineering } from './DataEngineering';
+import { DataAnalysis } from './DataAnalysis';
+import { DataScience } from './DataScience';
+import { MLEngineering } from './MLEngineering';
+import { BusinessIntelligence } from './BusinessIntelligence';
+import { Governance } from './Governance';
+import { CompletedSystem } from './CompletedSystem';
+import { CareerDiscovery } from './CareerDiscovery';
+import { Completion } from './Completion';
+import { Ramadan } from './Ramadan';
+import { PresenterBar } from './Shell';
+import { GlossaryHost } from './Glossary';
+import { AchievementWatcher } from './Achievements';
 
 const STATION_COMPONENTS: Record<StationId, () => JSX.Element> = {
   de: DataEngineering,

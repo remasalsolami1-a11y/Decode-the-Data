@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
-import { stationById } from '../data/stations';
-import { AVG_TICKET_SAR, HOURS, WEEKDAYS, fmtHour } from '../data/dataset';
-import { BAD_KPIS, Scope, eidOutcome, useProject } from '../data/project';
-import { WAGE_SAR_PER_HOUR } from '../data/sim';
-import { Impact, Inputs } from '../components/Decision';
-import { useStationState, useStore } from '../state/store';
-import { Step, StationOutro, StationShell, nextAfter, nextLabelFor, useFastSkip } from '../components/Shell';
-import { LiveRestaurant } from '../components/LiveRestaurant';
-import { Consequence } from '../components/Consequence';
-import { Button, Feedback, FeedbackKind, GovTip, cx } from '../components/ui';
-import { ChartType, DashboardView, FORECAST_DAY, KPI_DEFS, WidgetId } from '../components/Dashboard';
-import { Icon } from '../components/Icon';
+import { stationById } from './stations';
+import { AVG_TICKET_SAR, HOURS, WEEKDAYS, fmtHour } from './dataset';
+import { BAD_KPIS, Scope, eidOutcome, useProject } from './project';
+import { WAGE_SAR_PER_HOUR } from './sim';
+import { Impact, Inputs } from './Decision';
+import { useStationState, useStore } from './store';
+import { Step, StationOutro, StationShell, nextAfter, nextLabelFor, useFastSkip } from './Shell';
+import { LiveRestaurant } from './LiveRestaurant';
+import { Consequence } from './Consequence';
+import { Button, Feedback, FeedbackKind, GovTip, cx } from './ui';
+import { ChartType, DashboardView, FORECAST_DAY, KPI_DEFS, WidgetId } from './Dashboard';
+import { Icon } from './Icon';
 
 const meta = stationById('bi');
 type ChartKey = 'hourly' | 'channel' | 'trend';

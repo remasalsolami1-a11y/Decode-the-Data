@@ -1,17 +1,17 @@
 import { CSSProperties, ReactNode, useState } from 'react';
-import { STATIONS, StationMeta, stationById } from '../data/stations';
-import { HOURS, WEEKDAYS, fmtHour, hourLabelAr, round1, staffFor, thu21 } from '../data/dataset';
-import { CONFIG_INFO, crowdLevel, realInputs } from '../data/model';
-import { FEATURE_AR, Project, TIER_LABEL, useProject } from '../data/project';
-import { StationId, useStore } from '../state/store';
-import { Icon } from '../components/Icon';
-import { Button, Chip, SimLabel, cx } from '../components/ui';
-import { BarChart } from '../components/charts';
-import { ChartType, DashboardView, Scenario, WidgetId } from '../components/Dashboard';
-import { LiveRestaurant } from '../components/LiveRestaurant';
-import { Lineage } from '../components/Lineage';
-import { TierBadge } from '../components/Decision';
-import { Achievements } from '../components/Achievements';
+import { STATIONS, StationMeta, stationById } from './stations';
+import { HOURS, WEEKDAYS, fmtHour, hourLabelAr, round1, staffFor, thu21 } from './dataset';
+import { CONFIG_INFO, crowdLevel, realInputs } from './model';
+import { FEATURE_AR, Project, TIER_LABEL, useProject } from './project';
+import { StationId, useStore } from './store';
+import { Icon } from './Icon';
+import { Button, Chip, SimLabel, cx } from './ui';
+import { BarChart } from './charts';
+import { ChartType, DashboardView, Scenario, WidgetId } from './Dashboard';
+import { LiveRestaurant } from './LiveRestaurant';
+import { Lineage } from './Lineage';
+import { TierBadge } from './Decision';
+import { Achievements } from './Achievements';
 
 function Panel({ meta, title, children, wide, id }: { meta?: StationMeta; title: string; children: ReactNode; wide?: boolean; id?: string }) {
   const color = meta?.color ?? '#111833';

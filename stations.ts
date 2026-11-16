@@ -1,4 +1,4 @@
-import type { StationId } from '../state/store';
+import type { StationId } from './store';
 
 export interface StationMeta {
   id: StationId;

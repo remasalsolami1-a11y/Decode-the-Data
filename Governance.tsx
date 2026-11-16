@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { OWNER, STATIONS, stationById } from '../data/stations';
-import { Avatar } from '../components/Avatar';
-import { useStationState, useStore, StationId } from '../state/store';
-import { Issue, useProject } from '../data/project';
-import { Step, StationOutro, StationShell, nextAfter, nextLabelFor, useFastSkip } from '../components/Shell';
-import { Button, Feedback, FeedbackKind, OptionCard, cx, En } from '../components/ui';
-import { Icon } from '../components/Icon';
+import { OWNER, STATIONS, stationById } from './stations';
+import { Avatar } from './Avatar';
+import { useStationState, useStore, StationId } from './store';
+import { Issue, useProject } from './project';
+import { Step, StationOutro, StationShell, nextAfter, nextLabelFor, useFastSkip } from './Shell';
+import { Button, Feedback, FeedbackKind, OptionCard, cx, En } from './ui';
+import { Icon } from './Icon';
 
 const meta = stationById('gov');
 

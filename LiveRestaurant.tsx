@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
-import { fmtHour } from '../data/dataset';
-import { TABLES, simulate } from '../data/sim';
+import { fmtHour } from './dataset';
+import { TABLES, simulate } from './sim';
 import { cx } from './ui';
 
-export { simulate } from '../data/sim';
+export { simulate } from './sim';
 
 function sky(hour: number, ramadan?: boolean) {
   if (hour <= 16) return { top: '#7FC3EE', bottom: '#CDEBFA', sea: '#2F8DBA', night: false, sun: true };

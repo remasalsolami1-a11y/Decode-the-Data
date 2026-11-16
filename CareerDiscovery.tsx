@@ -1,11 +1,11 @@
 import { CSSProperties } from 'react';
-import { ROADMAPS, STATIONS, StationMeta } from '../data/stations';
-import { useProject } from '../data/project';
-import { earnedAchievements } from '../components/Achievements';
+import { ROADMAPS, STATIONS, StationMeta } from './stations';
+import { useProject } from './project';
+import { earnedAchievements } from './Achievements';
 import { useState } from 'react';
-import { StationId, useStore } from '../state/store';
-import { Icon } from '../components/Icon';
-import { Button, Card, cx } from '../components/ui';
+import { StationId, useStore } from './store';
+import { Icon } from './Icon';
+import { Button, Card, cx } from './ui';
 
 export const TASKS: { id: StationId; text: string }[] = [
   { id: 'de', text: 'تنظيف الجدول الفوضوي ودمج المصدرين' },

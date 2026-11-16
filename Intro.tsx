@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { CHARACTERS, OWNER, STATIONS } from '../data/stations';
-import { Avatar } from '../components/Avatar';
-import { STATS, hourLabelAr, WEEKDAYS } from '../data/dataset';
-import { isUnlocked, Mode, STATION_ORDER, useStore } from '../state/store';
-import { Icon } from '../components/Icon';
-import { Button, Card, cx } from '../components/ui';
-import { Logo } from '../components/Shell';
+import { CHARACTERS, OWNER, STATIONS } from './stations';
+import { Avatar } from './Avatar';
+import { STATS, hourLabelAr, WEEKDAYS } from './dataset';
+import { isUnlocked, Mode, STATION_ORDER, useStore } from './store';
+import { Icon } from './Icon';
+import { Button, Card, cx } from './ui';
+import { Logo } from './Shell';
 
 function HeroVisual() {
   // animated "crowd over the day" bars built from the real hourly profile

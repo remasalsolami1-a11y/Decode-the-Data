@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useReducer } from 'react';
-import type { FeatureId } from '../data/model';
+import type { FeatureId } from './model';
 
 export type StationId = 'de' | 'da' | 'ds' | 'ml' | 'bi' | 'gov';
 export type ScreenId = 'landing' | 'mission' | 'map' | StationId | 'system' | 'ramadan' | 'career' | 'done';

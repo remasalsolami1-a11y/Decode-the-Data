@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { stationById } from '../data/stations';
-import { EID_NIGHT, HOURS, HourRecord, PAYDAY_DAY, PROMO_DAYS, SPECIAL_DAYS, Stats, WEEKDAYS, avgByHour, avgByWeekdayHour, dateAr, dayDeviation, fmtHour, hourLabelAr } from '../data/dataset';
-import { conclusionTier, useProject } from '../data/project';
-import { Impact, Inputs } from '../components/Decision';
-import { useStationState, useStore } from '../state/store';
-import { Step, StationOutro, StationShell, nextAfter, nextLabelFor, useFastSkip } from '../components/Shell';
-import { Button, Chip, Feedback, FeedbackKind, GovTip, OptionCard, Stat, cx, En } from '../components/ui';
-import { BarChart, Heatmap } from '../components/charts';
-import { Icon } from '../components/Icon';
+import { stationById } from './stations';
+import { EID_NIGHT, HOURS, HourRecord, PAYDAY_DAY, PROMO_DAYS, SPECIAL_DAYS, Stats, WEEKDAYS, avgByHour, avgByWeekdayHour, dateAr, dayDeviation, fmtHour, hourLabelAr } from './dataset';
+import { conclusionTier, useProject } from './project';
+import { Impact, Inputs } from './Decision';
+import { useStationState, useStore } from './store';
+import { Step, StationOutro, StationShell, nextAfter, nextLabelFor, useFastSkip } from './Shell';
+import { Button, Chip, Feedback, FeedbackKind, GovTip, OptionCard, Stat, cx, En } from './ui';
+import { BarChart, Heatmap } from './charts';
+import { Icon } from './Icon';
 
 const meta = stationById('da');
 type Filter = 'all' | 'work' | 'weekend' | `d${number}`;

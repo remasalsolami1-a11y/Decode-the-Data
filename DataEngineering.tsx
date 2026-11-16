@@ -1,3 +1,4 @@
+import { upsetAr, staffAr } from './sim';
 import { useEffect, useState } from 'react';
 import { stationById } from './stations';
 import { DUPLICATE_COUNT, MISSING_CELLS, MissingStrategy, RAW_DELIVERY, RAW_POS, RAW_ROW_COUNT, SNAPSHOT_ALTERNATIVES, SNAPSHOT_CLEAN, TRUTH, buildDataset, thu21, dateAr, fmtHour, hourLabelAr, mean, round1 } from './dataset';
@@ -70,7 +71,7 @@ export function DataEngineering() {
     if (dupKey && !st.removed.includes(dupKey)) {
       const removed = [...st.removed, dupKey];
       set({ removed });
-      setFb({ kind: 'success', text: `حُذف التكرار لساعة ${fmtHour(hour)}. ${removed.length === 3 ? 'ممتاز! ما بقي أي تكرار.' : `باقي ${3 - removed.length}.`}` });
+      setFb({ kind: 'success', text: `حُذف التكرار لساعة ${fmtHour(hour)}. ${removed.length === 3 ? 'ممتاز! ما بقي أي تكرار.' : `باقي ${3 - removed.length === 1 ? 'واحد' : 3 - removed.length}.`}` });
     } else {
       setFb({ kind: 'hint', text: `صف ${fmtHour(hour)} موجود مرة واحدة فقط — هذا صف أصلي، نحتاجه. ابحث عن ساعة تظهر مرتين في نفس الجدول.` });
     }
@@ -90,10 +91,10 @@ export function DataEngineering() {
     if (k === 'sameSlot')
       return `طبّقنا القرار على ${res.affected} ساعة مفقودة في الأسابيع الأربعة. كل قيمة = متوسط نفس اليوم ونفس الساعة في الأيام العادية (بدون ليلة العيد)، ومعلَّمة "مُقدّرة". متوسط خطأ التقدير مقارنة بالحقيقة: ±${IMPUTE_ERR.sameSlot} طلب.`;
     if (k === 'overall')
-      return `عوّضنا ${res.affected} ساعة بمتوسط عام = ${SNAPSHOT_ALTERNATIVES.overall} طلب صالة. المشكلة: كل الساعات المفقودة ذروة مسائية، فقلّلناها. متوسط الخميس 9 مساءً صار ${thu} بدل ${thuBest}. خطأ التقدير ±${IMPUTE_ERR.overall}.`;
+      return `عوّضنا ${res.affected} ساعة بمتوسط عام = ${SNAPSHOT_ALTERNATIVES.overall} طلب صالة. المشكلة: كل الساعات المفقودة ذروة مسائية، فقلّلناها. متوسط إجمالي طلبات الخميس 9 مساءً صار ${thu} بدل ${thuBest}. خطأ التقدير ±${IMPUTE_ERR.overall}.`;
     if (k === 'drop')
       return `حذفنا ${res.removed} سجل — صار عندنا ${res.rows.length} بدل 336. ما أضفنا أرقامًا مخترعة، لكن خسرنا ساعات ذروة: المحلل والنموذج بيشوفون ليالي خميس وجمعة أقل.`;
-    return `${res.affected} ساعة ذروة صارت بصفر طلبات صالة. متوسط الخميس 9 مساءً نزل إلى ${thu} بدل ${thuBest}، وخطأ التقدير ±${IMPUTE_ERR.zero} طلب. وهذا الخطأ بيمشي للتحليل والنموذج.`;
+    return `${res.affected} ساعة ذروة صارت بصفر طلبات صالة. متوسط إجمالي طلبات الخميس 9 مساءً نزل إلى ${thu} بدل ${thuBest}، وخطأ التقدير ±${IMPUTE_ERR.zero} طلب. وهذا الخطأ بيمشي للتحليل والنموذج.`;
   };
 
   // ---------- step 5: merge animation ----------
@@ -147,7 +148,7 @@ export function DataEngineering() {
               ? inspect('dup', `صف ${r.time} مكرر في تطبيق التوصيل.`)
               : inspect(null, 'أرقام هذا الصف سليمة. انظر لطريقة كتابة الوقت واليوم مقارنة بالمصدر الثاني.')
           }
-          onDelFormat={() => inspect('format', 'المصدران يكتبان الوقت بطريقتين: "2026-10-29 21:00" مقابل "9:00 PM"، واليوم "Thu" بالإنجليزي. لازم نوحّد الصيغة قبل الدمج.')}
+          onDelFormat={() => inspect('format', 'المصدران يكتبان الوقت بطريقتين: "2025-06-12 21:00" مقابل "9:00 PM"، واليوم "Thu" بالإنجليزي. لازم نوحّد الصيغة قبل الدمج.')}
         />
         <div className="mt-4 space-y-3">
           {fb && st.step === 0 && <Feedback kind={fb.kind}>{fb.text}</Feedback>}
@@ -161,7 +162,7 @@ export function DataEngineering() {
               <Button variant="ghost" size="sm" icon="bulb" onClick={() => setHint(true)}>
                 ساعدني ألقاها
               </Button>
-              <Button variant="accent" disabled={st.found.length < 3} onClick={() => set({ step: 1 })} iconEnd="arrow">
+              <Button variant="accent" disabled={st.found.length < 3} why={`لقيت ${st.found.length} من 3 — اضغط على المشاكل في الجدولين`} onClick={() => set({ step: 1 })} iconEnd="arrow">
                 {st.found.length < 3 ? `وجدت ${st.found.length} من 3` : 'لقيت المشاكل الثلاث — يلا ننظّف'}
               </Button>
             </div>
@@ -192,7 +193,7 @@ export function DataEngineering() {
               <Button variant="ghost" size="sm" icon="bulb" onClick={() => setHint(true)}>
                 تلميح
               </Button>
-              <Button variant="accent" disabled={dupsLeft > 0} onClick={() => set({ step: 2 })} iconEnd="arrow">
+              <Button variant="accent" disabled={dupsLeft > 0} why={dupsLeft === 1 ? 'باقي صف مكرر واحد' : `باقي ${dupsLeft} صفوف مكررة`} onClick={() => set({ step: 2 })} iconEnd="arrow">
                 التالي: القيمة المفقودة
               </Button>
             </div>
@@ -218,7 +219,7 @@ export function DataEngineering() {
               ['drop', 'احذف الصفوف الناقصة', `أسهل حل: نتخلص من ${MISSING_CELLS.length} صف فيها نقص.`],
               ['zero', 'عوّضها بصفر', 'نعتبر أنه ما فيه طلبات في الصالة.'],
               ['overall', 'عوّضها بمتوسط كل الساعات', `متوسط طلبات الصالة لكل الساعات = ${SNAPSHOT_ALTERNATIVES.overall}`],
-              ['sameSlot', 'عوّضها بمتوسط نفس اليوم والساعة في الأيام العادية', `مثلًا الخميس 9 مساءً (بدون ليلة العيد) = ${SNAPSHOT_ALTERNATIVES.sameSlot}`],
+              ['sameSlot', 'عوّضها بمتوسط نفس اليوم والساعة في الأيام العادية', `مثلًا الخميس 9 مساءً (بدون ليلة العيد) = ${SNAPSHOT_ALTERNATIVES.sameSlot} طلب صالة`],
             ] as [Missing, string, string][]
           ).map(([k, t, d]) => (
             <OptionCard
@@ -246,7 +247,7 @@ export function DataEngineering() {
           {st.missing && <StrategyCompare chosen={st.missing} />}
           {st.step === 2 && (
             <div className="flex justify-end">
-              <Button variant="accent" disabled={!st.missing} onClick={() => set({ step: 3 })} iconEnd="arrow">
+              <Button variant="accent" disabled={!st.missing} why="اختر طريقة لمعالجة القيم المفقودة" onClick={() => set({ step: 3 })} iconEnd="arrow">
                 التالي: توحيد الصيغ
               </Button>
             </div>
@@ -256,12 +257,12 @@ export function DataEngineering() {
         <Consequence
           open={!!oops}
           headline="بعد أسابيع… ليلة العيد"
-          story={`البيانات اللي فيها أصفار علّمت النموذج أن ليالي الذروة أهدأ من الحقيقة. توقّع ${Math.round(zeroProject.eidForecast[peakIdx])} طلب الساعة ${fmtHour(zeroProject.eidTruth.indexOf(Math.max(...zeroProject.eidTruth)) + 12)} فجهّزت أم فهد ${zeroProject.recommendedStaff} موظفين — والطلب الحقيقي ${Math.round(zeroProject.eidTruth[peakIdx])}.`}
+          story={`البيانات اللي فيها أصفار علّمت النموذج أن ليالي الذروة أهدأ من الحقيقة. توقّع ${Math.round(zeroProject.eidForecast[peakIdx])} طلب الساعة ${fmtHour(zeroProject.eidTruth.indexOf(Math.max(...zeroProject.eidTruth)) + 12)} فجهّزت أم فهد ${staffAr(zeroProject.recommendedStaff)} — والطلب الحقيقي ${Math.round(zeroProject.eidTruth[peakIdx])}.`}
           hour={12 + peakIdx}
           orders={zeroProject.eidTruth[peakIdx]}
           staff={zeroProject.recommendedStaff}
           eid
-          lesson={`قرار صغير في تنظيف البيانات يمشي في كل المراحل اللي بعده: التحليل، النموذج، ثم قرار التوظيف. محسوبًا على كامل ليلة العيد: ${zeroProject.outcome.upset} عميل زعلان.`}
+          lesson={`قرار صغير في تنظيف البيانات يمشي في كل المراحل اللي بعده: التحليل، النموذج، ثم قرار التوظيف. محسوبًا على كامل ليلة العيد: ${upsetAr(zeroProject.outcome.upset)}.`}
           onRewind={() => {
             setOops(null);
             set({ missing: null });
@@ -323,7 +324,7 @@ export function DataEngineering() {
           )}
           {st.step === 3 && (
             <div className="flex justify-end">
-              <Button variant="accent" disabled={!st.timeFmt} onClick={() => set({ step: 4 })} iconEnd="arrow">
+              <Button variant="accent" disabled={!st.timeFmt} why="اختر صيغة الوقت" onClick={() => set({ step: 4 })} iconEnd="arrow">
                 التالي: الدمج
               </Button>
             </div>
@@ -570,7 +571,7 @@ function StrategyCompare({ chosen }: { chosen: MissingStrategy }) {
             <tr className="text-ink-500 border-b border-ink-200">
               <th className="text-right font-medium py-2">الخيار</th>
               <th className="text-right font-medium py-2">عدد السجلات</th>
-              <th className="text-right font-medium py-2">متوسط الخميس 9 م</th>
+              <th className="text-right font-medium py-2">متوسط إجمالي طلبات الخميس 9 م</th>
               <th className="text-right font-medium py-2">خطأ التقدير</th>
               <th className="text-right font-medium py-2">التقييم</th>
             </tr>

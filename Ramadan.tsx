@@ -153,7 +153,7 @@ export function Ramadan() {
             )}
             {step === 2 && (
               <div className="flex justify-end mt-3">
-                <Button variant="accent" disabled={boss.peaks.length < 2} onClick={() => setBoss({ step: 3 })} iconEnd="arrow">
+                <Button variant="accent" disabled={boss.peaks.length < 2} why={`حدّد الذروتين (${boss.peaks.length} من 2)`} onClick={() => setBoss({ step: 3 })} iconEnd="arrow">
                   سلّم النمط لمهندس تعلم الآلة
                 </Button>
               </div>

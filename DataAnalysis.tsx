@@ -59,6 +59,8 @@ export function DataAnalysis() {
     if (i === maxI) {
       set({ peakFound: true });
       setFb({ kind: 'success', text: `صح! في "${compareMode ? 'نهاية الأسبوع' : filterName(st.filter)}" الذروة الساعة ${fmtHour(HOURS[i])} بمتوسط ${vals[i]} طلب في الساعة.` });
+    } else if (st.peakFound) {
+      setFb({ kind: 'info', text: `الساعة ${fmtHour(HOURS[i])} متوسطها ${vals[i]} طلب. (ساعة الذروة حدّدتها خلاص ✓${st.compared ? '' : ' — باقي تضغط «قارن»'})` });
     } else {
       setFb({ kind: 'hint', text: `الساعة ${fmtHour(HOURS[i])} متوسطها ${vals[i]} طلب. فيه عمود أطول — دوّر على أعلى نقطة.` });
     }
@@ -154,23 +156,31 @@ export function DataAnalysis() {
           ))}
         </div>
         <div className="text-sm text-ink-500 mb-1">
-          متوسط عدد الطلبات في الساعة — {compareMode ? 'أيام العمل (الأحد–الأربعاء) مقابل نهاية الأسبوع (الخميس–السبت)' : filterName(st.filter)}
+          متوسط عدد الطلبات في الساعة — {compareMode ? 'أيام العمل (الأحد–الأربعاء) مقابل ليالي نهاية الأسبوع (الخميس–السبت)' : filterName(st.filter)}
         </div>
         <BarChart
           ariaLabel="متوسط الطلبات حسب الساعة"
           values={compareMode ? work.map((x) => x.value) : series.map((x) => x.value)}
           labels={HOURS.map((h) => String(h))}
           color={meta.color}
-          onBarClick={compareMode ? undefined : clickBar}
+          onBarClick={compareMode || st.step !== 0 ? undefined : clickBar}
           compare={compareMode ? { values: weekend.map((x) => x.value), color: '#F59E0B', label: 'نهاية الأسبوع', mainLabel: 'أيام العمل' } : undefined}
         />
         <div className="flex flex-wrap gap-2 mt-3 text-sm">
           <span className={cx('inline-flex items-center gap-1.5 rounded-full px-3 py-1 border', st.peakFound ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'border-ink-200 text-ink-500')}>
             {st.peakFound ? <Icon name="check" size={14} stroke={3} /> : <Icon name="hand" size={14} />} حدّد ساعة الذروة
           </span>
-          <span className={cx('inline-flex items-center gap-1.5 rounded-full px-3 py-1 border', st.compared ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'border-ink-200 text-ink-500')}>
+          <button
+            type="button"
+            disabled={st.step !== 0}
+            onClick={() => {
+              setCompareMode(true);
+              set({ compared: true });
+            }}
+            className={cx('inline-flex items-center gap-1.5 rounded-full px-3 py-1 border', st.compared ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'border-[var(--accent)] text-[var(--accent)] font-semibold hover:bg-[var(--accent-soft)]')}
+          >
             {st.compared ? <Icon name="check" size={14} stroke={3} /> : <Icon name="hand" size={14} />} قارن أيام العمل بنهاية الأسبوع
-          </span>
+          </button>
         </div>
         <div className="mt-4 space-y-3">
           {fb && st.step === 0 && <Feedback kind={fb.kind}>{fb.text}</Feedback>}
@@ -181,7 +191,7 @@ export function DataAnalysis() {
           )}
           {st.step === 0 && (
             <div className="flex justify-end">
-              <Button variant="accent" disabled={!st.peakFound || !st.compared} onClick={() => set({ step: 1 })} iconEnd="arrow">
+              <Button variant="accent" disabled={!st.peakFound || !st.compared} why={!st.peakFound ? 'اضغط على أطول عمود في الرسم' : 'باقي: اضغط «قارن: العمل مقابل نهاية الأسبوع»'} onClick={() => set({ step: 1 })} iconEnd="arrow">
                 التالي: خريطة الأسبوع
               </Button>
             </div>
@@ -189,7 +199,7 @@ export function DataAnalysis() {
         </div>
       </Step>
 
-      <Step n={2} skipped={skipped(2)} reached={st.step} title="اكتشف أكثر وقت ازدحامًا في الأسبوع" instruction="هذه خريطة حرارية: كل خانة = يوم × ساعة، واللون الأغمق = طلبات أكثر. اضغط على أكثر خانة ازدحامًا.">
+      <Step n={2} skipped={skipped(2)} reached={st.step} title="اكتشف أكثر وقت ازدحامًا في الأسبوع" instruction="هذه خريطة حرارية: كل خانة = يوم × ساعة، واللون الأغمق = طلبات أكثر. اضغط على أكثر خانة ازدحامًا. (هنا كل الأيام بما فيها ليلة العيد، لذلك خانة الخميس 9 م أعلى من متوسط الخميس العادي.)">
         <Heatmap
           ariaLabel="خريطة حرارية للطلبات حسب اليوم والساعة"
           matrix={HEAT}
@@ -197,7 +207,7 @@ export function DataAnalysis() {
           colLabels={HOURS.map(String)}
           color={meta.color}
           selected={st.cell}
-          onCell={(r, c) => {
+          onCell={st.step !== 1 ? undefined : (r, c) => {
             if (st.step !== 1) return;
             set({ cell: [r, c] });
             if (r === HEAT_MAX[0] && c === HEAT_MAX[1]) setFb({ kind: 'success', text: `وجدتها! ${WEEKDAYS[r]} الساعة ${fmtHour(HOURS[c])} بمتوسط ${HEAT[r][c]} طلب — أكثر وقت ازدحامًا في الأسبوع.` });
@@ -208,7 +218,7 @@ export function DataAnalysis() {
           {fb && st.step === 1 && <Feedback kind={fb.kind}>{fb.text}</Feedback>}
           {st.step === 1 && (
             <div className="flex justify-end">
-              <Button variant="accent" disabled={!(st.cell && st.cell[0] === HEAT_MAX[0] && st.cell[1] === HEAT_MAX[1])} onClick={() => set({ step: 2 })} iconEnd="arrow">
+              <Button variant="accent" disabled={!(st.cell && st.cell[0] === HEAT_MAX[0] && st.cell[1] === HEAT_MAX[1])} why="اضغط على أغمق خانة في الخريطة" onClick={() => set({ step: 2 })} iconEnd="arrow">
                 التالي: الاستنتاج
               </Button>
             </div>
@@ -239,7 +249,7 @@ export function DataAnalysis() {
           {st.step === 2 && (
             <div className="flex justify-between items-center">
               <span className="text-sm text-ink-500 tabular-nums">وجدت {st.special.length} من 2</span>
-              <Button variant="accent" disabled={st.special.length < 2} onClick={() => set({ step: 3 })} iconEnd="arrow">
+              <Button variant="accent" disabled={st.special.length < 2} why={`لقيت ${st.special.length} من 2 — دوّر على أطول عمودين فوق الخط`} onClick={() => set({ step: 3 })} iconEnd="arrow">
                 التالي: الاستنتاج
               </Button>
             </div>
@@ -275,7 +285,7 @@ export function DataAnalysis() {
           <GovTip>{meta.govNote}</GovTip>
           {st.step === 3 && (
             <div className="flex justify-end">
-              <Button variant="accent" disabled={st.concl !== 'right' && st.concl !== 'promo'} onClick={() => set({ step: 4 })} iconEnd="arrow">
+              <Button variant="accent" disabled={st.concl !== 'right' && st.concl !== 'promo'} why="اختر استنتاجًا يناسب الرسوم" onClick={() => set({ step: 4 })} iconEnd="arrow">
                 اكتب التقرير
               </Button>
             </div>

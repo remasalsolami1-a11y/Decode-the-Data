@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { stationById } from './stations';
 import { AVG_TICKET_SAR, HOURS, WEEKDAYS, fmtHour } from './dataset';
 import { BAD_KPIS, Scope, eidOutcome, useProject } from './project';
-import { WAGE_SAR_PER_HOUR } from './sim';
+import { WAGE_SAR_PER_HOUR, upsetAr, staffAr } from './sim';
 import { Impact, Inputs } from './Decision';
 import { useStationState, useStore } from './store';
 import { Step, StationOutro, StationShell, nextAfter, nextLabelFor, useFastSkip } from './Shell';
@@ -102,7 +102,7 @@ export function BusinessIntelligence() {
   const boardOk = st.board.includes('kpis') && st.board.includes('forecast') && st.board.length >= 3;
 
   const finish = () => {
-    dispatch({ type: 'complete', id: 'bi', output: { kpis: st.kpis, decision: `${st.planStaff} موظفين — ${st.planScope === 'evening' ? 'المساء' : 'اليوم كامل'}` } });
+    dispatch({ type: 'complete', id: 'bi', output: { kpis: st.kpis, decision: `${staffAr(st.planStaff ?? 0)} — ${st.planScope === 'evening' ? 'المساء' : 'اليوم كامل'}` } });
     go(nextAfter('bi'));
   };
 
@@ -158,7 +158,7 @@ export function BusinessIntelligence() {
           {st.step === 0 && (
             <div className="flex justify-between items-center">
               <span className="text-sm text-ink-500 tabular-nums">{st.kpis.length}/4</span>
-              <Button variant="accent" disabled={!kpiOk} onClick={() => set({ step: 1 })} iconEnd="arrow">
+              <Button variant="accent" disabled={!kpiOk} why={`اختر 4 مؤشرات (اخترت ${st.kpis.length})`} onClick={() => set({ step: 1 })} iconEnd="arrow">
                 التالي: اختر الرسوم
               </Button>
             </div>
@@ -197,7 +197,7 @@ export function BusinessIntelligence() {
         </div>
         {st.step === 1 && (
           <div className="flex justify-end mt-4">
-            <Button variant="accent" disabled={!chartsOk} onClick={() => set({ step: 2 })} iconEnd="arrow">
+            <Button variant="accent" disabled={!chartsOk} why="اختر نوع رسم لكل معلومة من الثلاث" onClick={() => set({ step: 2 })} iconEnd="arrow">
               التالي: ركّب اللوحة
             </Button>
           </div>
@@ -270,7 +270,7 @@ export function BusinessIntelligence() {
           {st.step === 1 && chartsOk && chartsTier === 'cost' && <Feedback kind="hint">بعض الرسوم ما تناسب معلومتها — تقدر تكمل، لكن قراءة اللوحة بتكون أصعب.</Feedback>}
           {st.step === 2 && (
             <div className="flex justify-end">
-              <Button variant="accent" disabled={!boardOk} onClick={() => set({ step: 3 })} iconEnd="arrow">
+              <Button variant="accent" disabled={!boardOk} why="أضف 3–4 عناصر للوحة، منها «شريط المؤشرات» و«توقع ليلة العيد»" onClick={() => set({ step: 3 })} iconEnd="arrow">
                 اللوحة جاهزة — جرّبها بقرار
               </Button>
             </div>
@@ -278,7 +278,7 @@ export function BusinessIntelligence() {
         </div>
       </Step>
 
-      <Step n={4} reached={st.step} title="خطّط موظفي ليلة العيد" instruction={`${WEEKDAYS[FORECAST_DAY]} القادم ليلة العيد. نموذجك (من المحطة السابقة) يتوقع الطلبات تحت. الجدول الحالي ${SCHEDULED} موظفين. جرّب على المطعم الحي، ثم اعتمد خطتك — وبنشوف وش يصير في الليلة الحقيقية.`}>
+      <Step n={4} reached={st.step} title="خطّط موظفي ليلة العيد" instruction={`${WEEKDAYS[FORECAST_DAY]} القادم ليلة العيد. نموذجك (من المحطة السابقة) يتوقع الطلبات تحت. الجدول الحالي ${staffAr(SCHEDULED)}. جرّب على المطعم الحي، ثم اعتمد خطتك — وبنشوف وش يصير في الليلة الحقيقية.`}>
         <div className="rounded-xl bg-[var(--accent-soft)] p-4 mb-4 grid sm:grid-cols-3 gap-3 text-center">
           <div>
             <div className="text-xs text-ink-500">ذروة متوقعة (من نموذجك)</div>
@@ -319,7 +319,7 @@ export function BusinessIntelligence() {
               </button>
             ))}
           </div>
-          <span className="text-xs text-ink-500">تكلفة الرواتب الليلة: {trialOutcome.labor.toLocaleString('en')} ريال</span>
+          <span className="text-xs text-ink-500">تكلفة رواتب يوم العيد (12:00–00:00): {trialOutcome.labor.toLocaleString('en')} ريال</span>
         </div>
         <LiveRestaurant hour={peakHour} orders={peak} staff={trialStaff} eid caption={`المعاينة حسب توقع نموذجك (${Math.round(peak)} طلب) — الليلة الحقيقية قد تختلف`} />
         <div className="mt-4 space-y-3">
@@ -337,7 +337,7 @@ export function BusinessIntelligence() {
             </div>
           )}
           {planned && (
-            <Impact tier={planned.tier} title={`ليلة العيد الحقيقية بخطتك (${planned.staff} موظفين، ${planned.scope === 'evening' ? 'المساء' : 'اليوم كامل'})`}>
+            <Impact tier={planned.tier} title={`ليلة العيد الحقيقية بخطتك (${staffAr(planned.staff)}، ${planned.scope === 'evening' ? 'المساء' : 'اليوم كامل'})`}>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 my-2 text-center">
                 {[
                   ['عملاء زعلانين', planned.upset],
@@ -386,12 +386,12 @@ export function BusinessIntelligence() {
         <Consequence
           open={oops}
           headline="ليلة العيد، الساعة 9 مساءً…"
-          story={`اعتمدت ${planned?.staff ?? trialStaff} موظفين. الطلب الحقيقي في الذروة ${Math.round(Math.max(...project.eidTruth))} طلب.`}
+          story={`اعتمدت ${staffAr(planned?.staff ?? trialStaff)}. الطلب الحقيقي في الذروة ${Math.round(Math.max(...project.eidTruth))} طلب.`}
           hour={12 + project.eidTruth.indexOf(Math.max(...project.eidTruth))}
           orders={Math.max(...project.eidTruth)}
           staff={planned?.staff ?? trialStaff}
           eid
-          lesson={`محسوبًا على الليلة كاملة: ${(planned ?? trialOutcome).upset} عميل زعلان وخسارة تقريبية ${(planned ?? trialOutcome).lostRevenue.toLocaleString('en')} ريال. لوحة المعلومات ما تفيد إذا ما غيّرت القرار — وما تفيد إذا كان التوقع اللي فيها ناقص.`}
+          lesson={`محسوبًا على الليلة كاملة: ${upsetAr((planned ?? trialOutcome).upset)} وخسارة تقريبية ${(planned ?? trialOutcome).lostRevenue.toLocaleString('en')} ريال. لوحة المعلومات ما تفيد إذا ما غيّرت القرار — وما تفيد إذا كان التوقع اللي فيها ناقص.`}
           onRewind={() => {
             setOops(false);
             set({ planStaff: null });
@@ -409,11 +409,11 @@ export function BusinessIntelligence() {
             <div>
               <div className="text-2xl font-bold mb-2">لوحة معلومات إدارية تعمل</div>
               <p className="text-white/85">
-                تعرض {st.kpis.length} مؤشرات، والطلب التاريخي، وتوقعات نموذجك — وساعدت في قرار: <b>{st.planStaff} موظفين ليلة العيد ({st.planScope === 'evening' ? 'المساء فقط' : 'اليوم كامل'})</b>.
+                تعرض {st.kpis.length} مؤشرات، والطلب التاريخي، وتوقعات نموذجك — وساعدت في قرار: <b>{staffAr(st.planStaff ?? 0)} ليلة العيد ({st.planScope === 'evening' ? 'المساء فقط' : 'اليوم كامل'})</b>.
               </p>
               {planned && (
                 <p className="text-white/75 text-sm mt-1">
-                  النتيجة الحقيقية: {planned.upset} عميل زعلان · رواتب {planned.labor.toLocaleString('en')} ريال
+                  النتيجة الحقيقية: {upsetAr(planned.upset)} · رواتب {planned.labor.toLocaleString('en')} ريال
                 </p>
               )}
               <p className="mt-3 text-white/80 text-sm">→ قبل الإطلاق: مراجعة الحوكمة. من يشوف وش؟ وهل البيانات محمية؟</p>

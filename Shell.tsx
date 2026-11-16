@@ -2,7 +2,7 @@ import { CSSProperties, ReactNode, createContext, useContext, useEffect, useRef,
 import { CHARACTERS, CONCEPTS, STATIONS, StationMeta, stationById } from './stations';
 import { SCREEN_ORDER, STATION_ORDER, StationId, isFast, useStore } from './store';
 import { Avatar } from './Avatar';
-import { useProject } from './project';
+import { fixAwaitingDecision, useProject } from './project';
 import { Icon } from './Icon';
 import { Button, Card, cx, Modal } from './ui';
 
@@ -137,10 +137,12 @@ export function StationShell({ meta, children }: { meta: StationMeta; children: 
           </h1>
           <p className="mt-3 text-lg text-ink-700 max-w-2xl leading-relaxed">{meta.objective}</p>
           <div className="mt-4 flex flex-wrap gap-2 text-sm">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 border border-ink-200 px-3 py-1">
-              <Icon name="user" size={14} />
-              يقدّمها: <b>{meta.presenter}</b>
-            </span>
+            {meta.presenter && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 border border-ink-200 px-3 py-1">
+                <Icon name="user" size={14} />
+                يقدّمها: <b>{meta.presenter}</b>
+              </span>
+            )}
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 border border-ink-200 px-3 py-1">
               <Icon name="spark" size={14} />
               المخرج: {meta.output}
@@ -448,7 +450,7 @@ function GovFixBanner({ id }: { id: StationId }) {
   const project = useProject();
   const fix = (state.station[id] as { govFix?: { id: string; title: string; hint: string } } | undefined)?.govFix;
   if (!fix) return null;
-  const resolved = !project.audit.some((i) => i.id === fix.id);
+  const resolved = !project.audit.some((i) => i.id === fix.id) && !fixAwaitingDecision(state.station[id]);
   const dismiss = () => dispatch({ type: 'patchStation', id, patch: { govFix: undefined } });
   return (
     <div className={cx('sticky top-16 z-20 rounded-2xl border-2 p-4 shadow-lift', resolved ? 'border-emerald-300 bg-emerald-50' : 'border-amber-300 bg-amber-50')} role="status" aria-live="polite">

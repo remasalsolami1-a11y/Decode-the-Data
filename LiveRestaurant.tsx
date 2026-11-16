@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { fmtHour } from './dataset';
-import { TABLES, simulate } from './sim';
+import { TABLES, simulate, staffAr } from './sim';
 import { cx } from './ui';
 
 export { simulate } from './sim';
@@ -41,7 +41,7 @@ export function LiveRestaurant({
   const cooks = Math.min(staff, 14);
   return (
     <figure className={cx('relative rounded-2xl overflow-hidden border border-ink-200 bg-ink-950', className)}>
-      <svg viewBox="0 0 640 380" className="w-full h-auto block" style={{ direction: 'ltr' }} role="img" aria-label={`مطعم DataBite الساعة ${fmtHour(hour)}: ${Math.round(orders)} طلب، ${staff} موظفين، وقت الانتظار ${sim.wait} دقيقة`}>
+      <svg viewBox="0 0 640 380" className="w-full h-auto block" style={{ direction: 'ltr' }} role="img" aria-label={`مطعم DataBite الساعة ${fmtHour(hour)}: ${Math.round(orders)} طلب، ${staffAr(staff)}، وقت الانتظار ${sim.wait} دقيقة`}>
         <defs>
           <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor={s.top} />
@@ -165,8 +165,8 @@ export function LiveRestaurant({
           ['الموظفون', String(staff)],
           ['وقت الانتظار', sim.waitLabel],
           ['مزاج العملاء', sim.mood],
-        ].map(([l, v]) => (
-          <div key={l} className="bg-ink-950 px-2 py-2">
+        ].map(([l, v], i) => (
+          <div key={l} className={cx('bg-ink-950 px-2 py-2', i === 4 && 'col-span-2 sm:col-span-1')}>
             <div className="text-[11px] text-white/55">{l}</div>
             <div className="font-bold tabular-nums text-lg leading-tight" dir={l === 'الساعة' ? 'ltr' : undefined}>
               {v}

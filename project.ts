@@ -16,7 +16,7 @@ import {
   buildDataset, computeStats, thu21, dateAr, dayDeviation, fmtHour, round1, staffFor, trueExpected, EID_NIGHT, PAYDAY_DAY,
 } from './dataset';
 import { BEST_FEATURES, FeatureId, ModelRun, TrainConfig, realInputs, runModel } from './model';
-import { WAGE_SAR_PER_HOUR, simulate } from './sim';
+import { WAGE_SAR_PER_HOUR, simulate, upsetAr, staffAr } from './sim';
 import { AppState, StationId, useStore } from './store';
 
 export type Tier = 'best' | 'cost' | 'harm';
@@ -183,9 +183,9 @@ export function audit(p: Omit<Project, 'audit'>): Issue[] {
   const best = computeStatsBest();
   // station 1
   if (d.de.missing === 'zero')
-    out.push({ id: 'de-zero', station: 'de', severity: 'critical', fixStep: 2, title: `${clean.affected} ساعة ذروة سُجّلت بصفر طلبات صالة`, detail: `متوسط الخميس 9 مساءً في البيانات صار ${thu21(clean.rows)} بدل ${thu21(best.rows)}. الخطأ انتقل للتحليل والنموذج وتوقع ليلة العيد.` , hint: 'اختر «متوسط نفس اليوم والساعة» لمعالجة القيم المفقودة.' });
+    out.push({ id: 'de-zero', station: 'de', severity: 'critical', fixStep: 2, title: `${clean.affected} ساعة ذروة سُجّلت بصفر طلبات صالة`, detail: `متوسط إجمالي طلبات الخميس 9 مساءً صار ${thu21(clean.rows)} بدل ${thu21(best.rows)}. الخطأ انتقل للتحليل والنموذج وتوقع ليلة العيد.` , hint: 'اختر «متوسط نفس اليوم والساعة» لمعالجة القيم المفقودة.' });
   if (d.de.missing === 'overall')
-    out.push({ id: 'de-overall', station: 'de', severity: 'warning', fixStep: 2, title: `${clean.affected} قيمة عُوّضت بمتوسط عام لا يناسب ساعات الذروة`, detail: `الساعات المفقودة كلها ذروة مسائية، فالمتوسط العام قلّلها. متوسط الخميس 9 مساءً: ${thu21(clean.rows)} بدل ${thu21(best.rows)}.` , hint: 'اختر «متوسط نفس اليوم والساعة» بدل المتوسط العام.' });
+    out.push({ id: 'de-overall', station: 'de', severity: 'warning', fixStep: 2, title: `${clean.affected} قيمة عُوّضت بمتوسط عام لا يناسب ساعات الذروة`, detail: `الساعات المفقودة كلها ذروة مسائية، فالمتوسط العام قلّلها. متوسط إجمالي طلبات الخميس 9 مساءً: ${thu21(clean.rows)} بدل ${thu21(best.rows)}.` , hint: 'اختر «متوسط نفس اليوم والساعة» بدل المتوسط العام.' });
   if (d.de.missing === 'drop')
     out.push({ id: 'de-drop', station: 'de', severity: 'info', fixStep: 2, title: `حُذف ${clean.removed} سجل من 336`, hint: 'اختر «متوسط نفس اليوم والساعة» بدل حذف الصفوف.', detail: 'خسرنا ساعات ذروة من البيانات. الأثر على النموذج صغير هنا، لكن الحذف المتكرر يجعل البيانات لا تمثّل أهم الأوقات.' });
   // station 2
@@ -222,13 +222,13 @@ export function audit(p: Omit<Project, 'audit'>): Issue[] {
   if (noise.length)
     out.push({ id: 'bi-noise', station: 'bi', severity: 'info', fixStep: 0, title: 'مؤشرات لا تخدم قرار التوظيف في اللوحة', detail: 'تشتت المديرة عن الأرقام المهمة.' });
   const scopeAr = d.bi.scope === 'allday' ? 'اليوم كامل' : 'المساء فقط';
-  const planAr = `خطتك: ${outcome.staff} موظف (${scopeAr})`;
+  const planAr = `خطتك: ${staffAr(outcome.staff)} (${scopeAr})`;
   const needTruth = staffFor(Math.max(...p.eidTruth));
   if (d.bi.staff !== null || d.bi.scope === 'allday') {
     if (outcome.tier === 'harm')
-      out.push({ id: 'bi-under', station: 'bi', severity: 'critical', fixStep: 3, title: `قرار التوظيف ترك ${outcome.upset} عميل زعلان ليلة العيد`, detail: `${planAr}. أقصى انتظار ${outcome.maxWait} دقيقة، وخسارة تقريبية ${outcome.lostRevenue.toLocaleString('en')} ريال.`, hint: `اضغط «عدّل الخطة» وزِد موظفي المساء. ذروة ليلة العيد الحقيقية كانت تحتاج حوالي ${needTruth} موظف.` });
+      out.push({ id: 'bi-under', station: 'bi', severity: 'critical', fixStep: 3, title: `قرار التوظيف ترك ${upsetAr(outcome.upset)} ليلة العيد`, detail: `${planAr}. أقصى انتظار ${outcome.maxWait} دقيقة، وخسارة تقريبية ${outcome.lostRevenue.toLocaleString('en')} ريال.`, hint: `اضغط «عدّل الخطة» وزِد موظفي المساء. ذروة ليلة العيد الحقيقية كانت تحتاج حوالي ${staffAr(needTruth)}.` });
     else if (outcome.tier === 'cost' && outcome.upset >= 6)
-      out.push({ id: 'bi-tight', station: 'bi', severity: 'warning', fixStep: 3, title: `${outcome.upset} عميل انتظروا أكثر من اللازم ليلة العيد`, detail: `${planAr}. أقصى انتظار ${outcome.maxWait} دقيقة — قريب من الحاجة لكنه ناقص قليلًا.`, hint: `اضغط «عدّل الخطة» وزِد موظف أو اثنين للمساء (الذروة كانت تحتاج حوالي ${needTruth}).` });
+      out.push({ id: 'bi-tight', station: 'bi', severity: 'warning', fixStep: 3, title: `${outcome.upset} من العملاء انتظروا أكثر من اللازم ليلة العيد`, detail: `${planAr}. أقصى انتظار ${outcome.maxWait} دقيقة — قريب من الحاجة لكنه ناقص قليلًا.`, hint: `اضغط «عدّل الخطة» وزِد موظف أو اثنين للمساء (الذروة كانت تحتاج حوالي ${staffAr(needTruth)}).` });
     else if (outcome.tier === 'cost')
       out.push({ id: 'bi-over', station: 'bi', severity: 'warning', fixStep: 3, title: 'تكلفة رواتب أعلى من اللازم', detail: `${planAr}. الرواتب ${outcome.labor.toLocaleString('en')} ريال مقابل ${outcome.optimalLabor.toLocaleString('en')} لو كان التوظيف مطابقًا للطلب (+${pct(outcome.labor, outcome.optimalLabor)}%).`, hint: d.bi.scope === 'allday' ? `اضغط «عدّل الخطة»، ثم اختر «المساء فقط» بدل «اليوم كامل» — الظهر هادئ وما يحتاج موظفين إضافيين — وخلّ العدد قريب من ${p.recommendedStaff}.` : `اضغط «عدّل الخطة» وقلّل موظفي المساء إلى حوالي ${p.recommendedStaff}.` });
   }
@@ -276,3 +276,14 @@ export function useProject(): Project {
 }
 
 export const weekdayAr = (i: number) => WEEKDAYS[i];
+
+// ---- governance "go back and fix" bookkeeping ------------------------------
+export interface GovFix { id: string; title: string; hint: string; keys?: string[] }
+/** true while the participant was sent back by governance but hasn't re-made the cleared decision yet */
+export function fixAwaitingDecision(stationState: unknown): GovFix | null {
+  const st = (stationState ?? {}) as Record<string, unknown>;
+  const fix = st.govFix as GovFix | undefined;
+  if (!fix) return null;
+  const made = (v: unknown) => v !== null && v !== undefined && v !== false;
+  return (fix.keys ?? []).every((k) => made(st[k])) ? null : fix;
+}

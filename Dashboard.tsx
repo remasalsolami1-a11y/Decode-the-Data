@@ -154,9 +154,9 @@ export function DashboardView({
           <div className={card}>
             <div className="text-sm font-bold mb-1">إجمالي الطلبات اليومية — 4 أسابيع</div>
             {charts.trend === 'bar' ? (
-              <BarChart ariaLabel="الطلبات اليومية" values={totals.map((t) => t.total)} labels={totals.map((_, i) => (i % 7 === 0 ? `W${i / 7 + 1}` : ''))} color={accent} height={180} />
+              <BarChart ariaLabel="الطلبات اليومية" values={totals.map((t) => t.total)} labels={totals.map((_, i) => (i % 7 === 0 ? `أسبوع ${i / 7 + 1}` : ''))} color={accent} height={180} />
             ) : (
-              <LineChart ariaLabel="الطلبات اليومية" labels={totals.map((_, i) => (i % 7 === 0 ? `W${i / 7 + 1}` : ''))} series={[{ name: 'يومي', values: totals.map((t) => t.total), color: accent, area: true }]} height={180} />
+              <LineChart ariaLabel="الطلبات اليومية" labels={totals.map((_, i) => (i % 7 === 0 ? `أسبوع ${i / 7 + 1}` : ''))} series={[{ name: 'يومي', values: totals.map((t) => t.total), color: accent, area: true }]} height={180} />
             )}
           </div>
         )}

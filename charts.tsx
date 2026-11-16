@@ -218,10 +218,11 @@ export function Heatmap({
                     <button
                       type="button"
                       onClick={() => onCell?.(r, c)}
+                      disabled={!onCell}
                       aria-label={`${rowLabels[r]} ${colLabels[c]}: ${v}`}
                       className={cx(
                         'w-8 h-8 sm:w-10 sm:h-9 rounded-md text-[10px] sm:text-[11px] font-semibold tabular-nums transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink-900',
-                        onCell && 'hover:scale-110',
+                        onCell ? 'hover:scale-110' : 'cursor-default',
                         isSel && 'ring-2 ring-ink-900 scale-110',
                       )}
                       style={{ background: color, opacity: 0.12 + t * 0.88, color: t > 0.45 ? 'white' : '#111833' }}

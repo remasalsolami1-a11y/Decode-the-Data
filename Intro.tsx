@@ -354,7 +354,7 @@ export function JourneyMap() {
                     {s.output}
                   </span>
                 </div>
-                <div className="text-xs text-ink-400 mt-2">يقدّمها: {s.presenter}</div>
+                {s.presenter && <div className="text-xs text-ink-400 mt-2">يقدّمها: {s.presenter}</div>}
               </button>
               {i < 5 && <span className="hidden lg:block absolute top-1/2 -left-3 w-2 h-2 rounded-full bg-ink-300 z-10" aria-hidden="true" />}
             </li>

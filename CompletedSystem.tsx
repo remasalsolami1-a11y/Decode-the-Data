@@ -1,3 +1,4 @@
+import { upsetAr, staffAr } from './sim';
 import { CSSProperties, ReactNode, useState } from 'react';
 import { STATIONS, StationMeta, stationById } from './stations';
 import { HOURS, WEEKDAYS, fmtHour, hourLabelAr, round1, staffFor, thu21 } from './dataset';
@@ -40,11 +41,11 @@ function youBuilt(p: Project): Record<StationId, { decision: string; impact: str
   return {
     de: {
       decision: `القيم المفقودة: ${{ sameSlot: 'متوسط نفس اليوم والساعة', overall: 'المتوسط العام', drop: 'حذف الصفوف', zero: 'صفر' }[d.de.missing]}`,
-      impact: `${p.clean.rows.length} سجل نظيف بُني عليه كل شي بعده. متوسط الخميس 9 مساءً في بياناتك ${thu21(p.clean.rows)} طلب.`,
+      impact: `${p.clean.rows.length} سجل نظيف بُني عليه كل شي بعده. متوسط إجمالي طلبات الخميس 9 مساءً في بياناتك ${thu21(p.clean.rows)} طلب.`,
     },
     da: {
       decision: d.da.conclusion === 'right' ? 'استنتاج يصف النمط كما تثبته الأرقام' : 'استنتاج فيه ادعاء سبب (العروض)',
-      impact: `الذروة ${hourLabelAr(p.stats.peak.hour)} (${p.stats.peak.value} طلب)، وأزحم يوم ${WEEKDAYS[p.stats.busiestDay]}، وليلة العيد +${p.deviation[18].pct}%.`,
+      impact: `الذروة ${hourLabelAr(p.stats.peak.hour)} (${p.stats.peak.value} طلب)، وأزحم يوم ${WEEKDAYS[p.stats.busiestDay]}، ويوم ليلة العيد أعلى من خميس عادي بـ ${p.deviation[18].pct}%.`,
     },
     ds: {
       decision: p.features.length ? `${p.features.length} خصائص: ${p.features.map((f) => FEATURE_AR[f]).join('، ')}` : 'منهج بلا خصائص (رقم واحد)',
@@ -55,8 +56,8 @@ function youBuilt(p: Project): Record<StationId, { decision: string; impact: str
       impact: `خطأ معلن ±${p.run.ev.mae.toFixed(1)}، وعلى أسبوع جديد ±${p.run.ev.realMae.toFixed(1)} طلب/ساعة.`,
     },
     bi: {
-      decision: `${d.bi.kpis.length} مؤشرات · ${d.bi.staff ?? p.recommendedStaff} موظفين ليلة العيد (${d.bi.scope === 'evening' ? 'المساء' : 'اليوم كامل'})`,
-      impact: `النتيجة: ${p.outcome.upset} عميل زعلان، أقصى انتظار ${p.outcome.maxWait} دقيقة، رواتب ${p.outcome.labor.toLocaleString('en')} ريال.`,
+      decision: `${d.bi.kpis.length} مؤشرات · ${staffAr(d.bi.staff ?? p.recommendedStaff)} ليلة العيد (${d.bi.scope === 'evening' ? 'المساء' : 'اليوم كامل'})`,
+      impact: `النتيجة: ${upsetAr(p.outcome.upset)}، أقصى انتظار ${p.outcome.maxWait} دقيقة، رواتب ${p.outcome.labor.toLocaleString('en')} ريال.`,
     },
     gov: {
       decision: d.gov.ethic === 'consent' ? 'رفض مشاركة أرقام العملاء بدون موافقة + تقنيع وصلاحيات' : 'تقنيع وصلاحيات وقواعد جودة',
@@ -255,7 +256,7 @@ export function CompletedSystem() {
         <Panel meta={S('ml')} title="ملخص تقييم النموذج">
           <div className="grid grid-cols-2 gap-2 text-center">
             <div className="rounded-xl bg-ink-50 py-3">
-              <div className="text-xs text-ink-500">الخطأ المعلن ({CONFIG_INFO[p.run.config].test})</div>
+              <div className="text-xs text-ink-500">الخطأ المعلن ({CONFIG_INFO[p.run.config].testAr})</div>
               <div className="text-2xl font-bold tabular-nums">±{ev.mae.toFixed(1)}</div>
             </div>
             <div className={cx('rounded-xl py-3', ev.realMae > ev.mae + 0.5 ? 'bg-rose-50' : 'bg-emerald-50')}>

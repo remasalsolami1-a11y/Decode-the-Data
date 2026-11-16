@@ -1,3 +1,4 @@
+import { staffAr } from './sim';
 import { useEffect, useMemo, useState } from 'react';
 import { stationById } from './stations';
 import { HOURS, WEEKDAYS, WEEKDAYS_EN, fmtHour, round1, staffFor } from './dataset';
@@ -113,7 +114,7 @@ export function MLEngineering() {
           <Icon name="flask" />
         </span>
         <p className="text-ink-700">
-          عالم البيانات سلّمنا المنهج: انحدار <En>Regression</En> بالخصائص <b>{features.length}</b>. دورك تبني النموذج فعليًا، تقيّمه بأمانة، وتحوّله لشي يستخدمه الناس. <b>ما راح تكتب كود</b> — بتختار طريقة التدريب وتشوف أثرها.
+          عالم البيانات سلّمنا المنهج: انحدار <En>Regression</En> بـ <b>{features.length}</b> خصائص. دورك تبني النموذج فعليًا، تقيّمه بأمانة، وتحوّله لشي يستخدمه الناس. <b>ما راح تكتب كود</b> — بتختار طريقة التدريب وتشوف أثرها.
         </p>
       </div>
 
@@ -203,7 +204,7 @@ export function MLEngineering() {
           )}
           {st.step === 0 && (
             <div className="flex justify-end">
-              <Button variant="accent" disabled={!st.snip} onClick={() => set({ step: 1 })} iconEnd="arrow">
+              <Button variant="accent" disabled={!st.snip} why="اختر طريقة تدريب" onClick={() => set({ step: 1 })} iconEnd="arrow">
                 التالي: التدريب
               </Button>
             </div>
@@ -211,7 +212,7 @@ export function MLEngineering() {
         </div>
       </Step>
 
-      <Step n={2} reached={st.step} title="درّب النموذج" instruction={`اضغط الزر. النموذج يتدرّب فعليًا الآن داخل متصفحك على ${ev.trainRows} ساعة من بياناتك (${CONFIG_INFO[run.config].train}).`}>
+      <Step n={2} reached={st.step} title="درّب النموذج" instruction={`اضغط الزر. النموذج يتدرّب فعليًا الآن داخل متصفحك على ${ev.trainRows} ساعة من بياناتك (${CONFIG_INFO[run.config].trainAr}).`}>
         <div className="rounded-xl bg-ink-950 text-ink-100 p-4 font-mono text-sm min-h-[150px]" dir="ltr" aria-live="polite">
           {training < 0 && !st.trained ? (
             <div className="h-[118px] grid place-items-center">
@@ -246,7 +247,7 @@ export function MLEngineering() {
         )}
       </Step>
 
-      <Step n={3} skipped={skipped(3)} reached={st.step} title="افهم نتائج التقييم" instruction={`هذه أرقام تقييمك (${CONFIG_INFO[run.config].test}). اختر يومًا لتقارن التوقع بالواقع.`}>
+      <Step n={3} skipped={skipped(3)} reached={st.step} title="افهم نتائج التقييم" instruction={`هذه أرقام تقييمك (على ${CONFIG_INFO[run.config].testAr}). اختر يومًا لتقارن التوقع بالواقع.`}>
         <div className="mb-3">
           <SimLabel>محسوبة فعليًا في متصفحك · على بيانات DataBite التعليمية (غير حقيقية)</SimLabel>
         </div>
@@ -401,13 +402,13 @@ export function MLEngineering() {
         </div>
         {st.predicted && (
           <div className="mt-5 animate-rise">
-            <div className="text-sm font-bold mb-2">وهكذا بيكون المطعم لو جهّزنا {staffFor(pred)} موظفين حسب التوقع:</div>
+            <div className="text-sm font-bold mb-2">وهكذا بيكون المطعم لو جهّزنا {staffAr(staffFor(pred))} حسب التوقع:</div>
             <LiveRestaurant hour={st.hour} orders={pred} staff={staffFor(pred)} eid={st.eid} caption="جرّب «ليلة العيد» الساعة 9 مساءً 🎆" />
           </div>
         )}
         {st.step === 3 && (
           <div className="flex justify-end mt-4">
-            <Button variant="accent" disabled={!st.predicted} onClick={() => set({ step: 4 })} iconEnd="arrow">
+            <Button variant="accent" disabled={!st.predicted} why="اضغط «توقّع» أولًا" onClick={() => set({ step: 4 })} iconEnd="arrow">
               حوّلها لخاصية في التطبيق
             </Button>
           </div>

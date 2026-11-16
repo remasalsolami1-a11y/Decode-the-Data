@@ -12,7 +12,7 @@ type BtnProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: IconName;
   iconEnd?: IconName;
 };
-export const Button = forwardRef<HTMLButtonElement, BtnProps>(function Button({ variant = 'primary', size = 'md', icon, iconEnd, className, children, ...rest }, ref) {
+export const Button = forwardRef<HTMLButtonElement, BtnProps & { why?: string }>(function Button({ variant = 'primary', size = 'md', icon, iconEnd, className, children, why, ...rest }, ref) {
   const base =
     'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[.98] select-none';
   const sizes = { sm: 'text-sm px-3 py-1.5', md: 'text-[15px] px-4 py-2.5', lg: 'text-lg px-6 py-3.5' }[size];
@@ -23,12 +23,22 @@ export const Button = forwardRef<HTMLButtonElement, BtnProps>(function Button({ 
     ghost: 'text-ink-700 hover:bg-ink-100 focus-visible:ring-ink-200',
     dark: 'bg-white/10 text-white border border-white/20 hover:bg-white/20 focus-visible:ring-white/30',
   }[variant];
-  return (
+  const btn = (
     <button ref={ref} className={cx(base, sizes, variants, className)} {...rest}>
       {icon && <Icon name={icon} size={size === 'lg' ? 20 : 18} />}
       {children}
       {iconEnd && <Icon name={iconEnd} size={size === 'lg' ? 20 : 18} />}
     </button>
+  );
+  if (!(rest.disabled && why)) return btn;
+  // a disabled button always says what's still missing
+  return (
+    <span className="inline-flex flex-wrap items-center justify-end gap-x-3 gap-y-2">
+      <span className="text-sm text-ink-600" role="status">
+        👈 {why}
+      </span>
+      {btn}
+    </span>
   );
 });
 

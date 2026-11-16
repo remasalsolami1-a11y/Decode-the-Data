@@ -1,3 +1,4 @@
+import { upsetAr } from './sim';
 import { useState } from 'react';
 import { CHARACTERS, OWNER, STATIONS } from './stations';
 import { Avatar } from './Avatar';
@@ -25,7 +26,7 @@ export function Completion() {
   const summary = `أكملت رحلة Decode the Data – اكتشف البيانات واكتشف مسارك 🎉
 بنيت نظامًا يتوقع ازدحام مطعم DataBite في جدة عبر 6 مسارات: هندسة البيانات، تحليل البيانات، علم البيانات، هندسة تعلم الآلة، ذكاء الأعمال، وحوكمة البيانات.
 أقرب المسارات لاهتماماتي: ${top3.map((t) => t.ar).join('، ')}
-نتيجة نظامي ليلة العيد: ${project.outcome.upset} عميل زعلان، وخطأ النموذج ±${project.run.ev.realMae.toFixed(1)}`;
+نتيجة نظامي ليلة العيد: ${upsetAr(project.outcome.upset)}، وخطأ النموذج ±${project.run.ev.realMae.toFixed(1)}`;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 sm:py-14 pb-24">
@@ -149,7 +150,7 @@ export function Completion() {
           </div>
           <div className="rounded-xl bg-ink-50 p-3">
             <div className="text-xs text-ink-500">ليلة العيد</div>
-            <div className="font-bold tabular-nums">{project.outcome.upset} عميل زعلان</div>
+            <div className="font-bold tabular-nums">{upsetAr(project.outcome.upset)}</div>
           </div>
         </div>
         <div className="mt-4">

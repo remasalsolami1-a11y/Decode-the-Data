@@ -74,7 +74,7 @@ export const STATIONS: StationMeta[] = [
     govNote: 'نوثّق نسخة النموذج والبيانات التي تدرّب عليها، ونقيّم بأمانة — بدون تضخيم الدقة.',
   },
   {
-    id: 'bi', role: 'مختصة ذكاء الأعمال', num: 5, ar: 'ذكاء الأعمال', en: 'Business Intelligence', presenter: 'يُعلن لاحقًا',
+    id: 'bi', role: 'مختصة ذكاء الأعمال', num: 5, ar: 'ذكاء الأعمال', en: 'Business Intelligence', presenter: '',
     color: '#F59E0B', soft: '#FFF6E5', icon: 'board',
     verb: 'يحوّل الأرقام والتوقعات إلى لوحة قرارات للإدارة',
     objective: 'ابنِ لوحة معلومات تساعد مديرة المطعم على اتخاذ قرار التوظيف.',

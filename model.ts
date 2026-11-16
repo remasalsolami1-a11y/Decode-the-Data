@@ -99,10 +99,10 @@ export function train(rows: HourRecord[], features: FeatureId[]): TrainedModel {
 
 // ---- training configurations (station 4) ---------------------------------
 export type TrainConfig = 'honest' | 'small' | 'same';
-export const CONFIG_INFO: Record<TrainConfig, { ar: string; train: string; test: string }> = {
-  honest: { ar: 'تدريب على الأسابيع 1–3 واختبار على الأسبوع 4', train: 'weeks 1-3', test: 'week 4' },
-  small: { ar: 'تدريب على الأسبوعين 1–2 فقط واختبار على 3–4', train: 'weeks 1-2', test: 'weeks 3-4' },
-  same: { ar: 'نموذج «يحفظ» الجدول، ويُقيَّم على نفس البيانات اللي حفظها', train: 'weeks 1-4 (memorised)', test: 'weeks 1-4 (same rows)' },
+export const CONFIG_INFO: Record<TrainConfig, { ar: string; train: string; test: string; trainAr: string; testAr: string }> = {
+  honest: { ar: 'تدريب على الأسابيع 1–3 واختبار على الأسبوع 4', train: 'weeks 1-3', test: 'week 4', trainAr: 'الأسابيع 1–3', testAr: 'الأسبوع 4' },
+  small: { ar: 'تدريب على الأسبوعين 1–2 فقط واختبار على 3–4', train: 'weeks 1-2', test: 'weeks 3-4', trainAr: 'الأسبوعين 1–2', testAr: 'الأسبوعين 3–4' },
+  same: { ar: 'نموذج «يحفظ» الجدول، ويُقيَّم على نفس البيانات اللي حفظها', train: 'weeks 1-4 (memorised)', test: 'weeks 1-4 (same rows)', trainAr: 'الأسابيع 1–4 كلها', testAr: 'نفس البيانات اللي حفظها' },
 };
 export function splitFor(rows: HourRecord[], cfg: TrainConfig) {
   if (cfg === 'small') return { train: rows.filter((r) => r.week <= 2), test: rows.filter((r) => r.week >= 3) };

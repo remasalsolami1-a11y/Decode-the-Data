@@ -1,3 +1,4 @@
+import { upsetAr, staffAr } from './sim';
 import { useState } from 'react';
 import { DUPLICATE_COUNT, MISSING_CELLS, RAW_ROW_COUNT, WEEKDAYS, fmtHour } from './dataset';
 import { CONFIG_INFO } from './model';
@@ -42,7 +43,7 @@ export function Lineage({ p }: { p: Project }) {
       id: 'da', owner: S('da').ar, color: S('da').color, icon: S('da').icon, title: 'تحليل الأنماط',
       input: `${p.clean.rows.length} سجل`,
       op: 'متوسطات حسب الساعة واليوم · مقارنة الأيام الاستثنائية',
-      output: `ذروة ${fmtHour(p.stats.peak.hour)} · أزحم يوم ${WEEKDAYS[p.stats.busiestDay]} · ليلة العيد +${p.deviation[18].pct}%`,
+      output: `ذروة ${fmtHour(p.stats.peak.hour)} · أزحم يوم ${WEEKDAYS[p.stats.busiestDay]} · ليلة العيد +${p.deviation[18].pct}% عن خميس عادي`,
       trace: `هذه الساعة دخلت في متوسط «الخميس 9 مساءً» = ${t.thu21} طلب.`,
     },
     {
@@ -62,9 +63,9 @@ export function Lineage({ p }: { p: Project }) {
     {
       id: 'bi', owner: S('bi').ar, color: S('bi').color, icon: S('bi').icon, title: 'لوحة وقرار',
       input: 'توقعات النموذج',
-      op: `${p.d.bi.kpis.length} مؤشرات · خطة ${t.staff} موظفين ليلة العيد`,
-      output: `${p.outcome.upset} عميل زعلان · رواتب ${p.outcome.labor.toLocaleString('en')} ريال`,
-      trace: `ليلة العيد الساعة 9 مساءً: اللوحة تعرض ${t.eidForecast21} طلب ← ${t.staff} موظفين.`,
+      op: `${p.d.bi.kpis.length} مؤشرات · خطة ${staffAr(t.staff)} ليلة العيد`,
+      output: `${upsetAr(p.outcome.upset)} · رواتب ${p.outcome.labor.toLocaleString('en')} ريال`,
+      trace: `ليلة العيد الساعة 9 مساءً: اللوحة تعرض ${t.eidForecast21} طلب ← ${staffAr(t.staff)}.`,
     },
     {
       id: 'gov', owner: S('gov').ar, color: S('gov').color, icon: S('gov').icon, title: 'مراجعة وحماية',

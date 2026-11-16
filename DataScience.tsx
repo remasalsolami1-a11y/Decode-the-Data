@@ -165,7 +165,7 @@ export function DataScience() {
           )}
           {st.step === 0 && (
             <div className="flex justify-end">
-              <Button variant="accent" disabled={st.q !== 'right'} onClick={() => set({ step: 1 })} iconEnd="arrow">
+              <Button variant="accent" disabled={st.q !== 'right'} why="اختر السؤال اللي نقدر نتوقعه ونقيسه" onClick={() => set({ step: 1 })} iconEnd="arrow">
                 التالي: افحص العوامل
               </Button>
             </div>
@@ -173,7 +173,7 @@ export function DataScience() {
         </div>
       </Step>
 
-      <Step n={2} skipped={skipped(2)} reached={st.step} title="افحص العوامل المحتملة" instruction={`اضغط على كل عامل لترى علاقته بعدد الطلبات. افحص العوامل ${VARS.length}.`}>
+      <Step n={2} skipped={skipped(2)} reached={st.step} title="افحص العوامل المحتملة" instruction={`اضغط على كل عامل لترى علاقته بعدد الطلبات. افحص كل العوامل (${VARS.length}) قبل ما تكمل.`}>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           {VARS.map((v) => {
             const seen = st.opened.includes(v.id);
@@ -207,7 +207,7 @@ export function DataScience() {
         {st.step === 1 && (
           <div className="flex justify-between items-center mt-4">
             <span className="text-sm text-ink-500 tabular-nums">فحصت {st.opened.length} من {VARS.length}</span>
-            <Button variant="accent" disabled={st.opened.length < VARS.length} onClick={() => set({ step: 2 })} iconEnd="arrow">
+            <Button variant="accent" disabled={st.opened.length < VARS.length} why={`افحص كل العوامل (${st.opened.length} من ${VARS.length})`} onClick={() => set({ step: 2 })} iconEnd="arrow">
               التالي
             </Button>
           </div>
@@ -238,7 +238,7 @@ export function DataScience() {
           )}
           {st.step === 2 && (
             <div className="flex justify-end">
-              <Button variant="accent" disabled={st.causal !== 'no'} onClick={() => set({ step: 3 })} iconEnd="arrow">
+              <Button variant="accent" disabled={st.causal !== 'no'} why="اختر الإجابة الأدق عن عدد الموظفين" onClick={() => set({ step: 3 })} iconEnd="arrow">
                 التالي: اختر الخصائص
               </Button>
             </div>
@@ -296,7 +296,7 @@ export function DataScience() {
                 تلميح: راجع اختياري
               </Button>
               {!st.featuresDone ? (
-                <Button variant="accent" disabled={!features.length} onClick={accept}>
+                <Button variant="accent" disabled={!features.length} why="اختر خاصية وحدة على الأقل" onClick={accept}>
                   اعتمد الخصائص
                 </Button>
               ) : (
@@ -354,7 +354,7 @@ export function DataScience() {
           )}
           {st.step === 4 && (
             <div className="flex justify-end">
-              <Button variant="accent" disabled={!st.approach} onClick={() => set({ step: 5 })} iconEnd="arrow">
+              <Button variant="accent" disabled={!st.approach} why="اختر منهجًا" onClick={() => set({ step: 5 })} iconEnd="arrow">
                 اعتمد المنهج
               </Button>
             </div>

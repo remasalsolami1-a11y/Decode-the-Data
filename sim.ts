@@ -18,3 +18,20 @@ export function simulate(orders: number, staff: number) {
   const stars = load <= 1 ? 5 : load < 1.3 ? 4 : load < 1.7 ? 3 : load < 2.2 ? 2 : 1;
   return { capacity, load, occupied, queue, wait, waitLabel, upset, mood, stars };
 }
+
+/** Arabic count phrase for upset customers ("4 عملاء زعلانين", "14 عميل زعلان") */
+export function upsetAr(n: number): string {
+  if (n === 0) return 'ولا عميل زعلان';
+  if (n === 1) return 'عميل زعلان واحد';
+  if (n === 2) return 'عميلين زعلانين';
+  if (n <= 10) return `${n} عملاء زعلانين`;
+  return `${n} عميل زعلان`;
+}
+
+/** Arabic count phrase for staff ("7 موظفين", "11 موظف") */
+export function staffAr(n: number): string {
+  if (n === 1) return 'موظف واحد';
+  if (n === 2) return 'موظفَين';
+  if (n >= 3 && n <= 10) return `${n} موظفين`;
+  return `${n} موظف`;
+}

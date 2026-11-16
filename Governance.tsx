@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { OWNER, STATIONS, stationById } from './stations';
 import { Avatar } from './Avatar';
 import { useStationState, useStore, StationId } from './store';
-import { Issue, useProject } from './project';
+import { Issue, fixAwaitingDecision, useProject } from './project';
 import { Step, StationOutro, StationShell, nextAfter, nextLabelFor, useFastSkip } from './Shell';
 import { Button, Feedback, FeedbackKind, OptionCard, cx, En } from './ui';
 import { Icon } from './Icon';
@@ -83,7 +83,7 @@ const ETHICS: { k: Ethic; t: string; fb: string }[] = [
 ];
 
 export function Governance() {
-  const { dispatch, go } = useStore();
+  const { state, dispatch, go } = useStore();
   const [st, set] = useStationState('gov', {
     step: 0,
     sensitive: [] as string[],
@@ -126,7 +126,7 @@ export function Governance() {
   };
 
   const qOpts: { k: QFix; t: string; fb: { kind: FeedbackKind; text: string } }[] = [
-    { k: 'keep', t: 'نتركها مثل ما هي — البيانات هي البيانات', fb: { kind: 'hint', text: 'المطعم مقفل الساعة 3 الفجر، و950 طلب رقم مستحيل. لو دخلت التدريب بتخرب النموذج واللوحة.' } },
+    { k: 'keep', t: 'نتركها مثل ما هي — البيانات هي البيانات', fb: { kind: 'hint', text: 'المطعم مقفل الساعة 3 الفجر، و950 طلب رقم مستحيل، و«-4 طلبات» ما لها معنى أصلًا. لو دخلت التدريب بتخرب النموذج واللوحة.' } },
     { k: 'delete', t: 'نحذفها بهدوء ونكمل', fb: { kind: 'hint', text: 'قريب — لازم ما تدخل التحليل. لكن الحذف الصامت يخفي المشكلة، وبتتكرر من نفس المصدر بدون ما أحد يعرف.' } },
     { k: 'flag', t: 'نعلّمها كخطأ، نستبعدها من التدريب، نبلّغ صاحب المصدر، ونضيف قاعدة تحقق', fb: { kind: 'success', text: 'هذا تفكير الحوكمة: نحمي النموذج، نحافظ على أثر المشكلة، نعالج السبب من جذوره، ونمنع تكرارها تلقائيًا.' } },
     { k: 'invent', t: 'نعدّلها لأرقام معقولة من عندنا', fb: { kind: 'hint', text: 'تأليف أرقام بدون أساس يضر بالثقة في البيانات كلها. التقدير الموثّق (مثل محطة الهندسة) يختلف عن التخمين.' } },
@@ -135,6 +135,14 @@ export function Governance() {
   // the audit of the participant's REAL decisions across all stations
   const issues: Issue[] = [
     ...project.audit,
+    ...STATIONS.filter((s) => s.id !== 'gov' && fixAwaitingDecision(state.station[s.id])).map((s) => ({
+      id: `pending-${s.id}`,
+      station: s.id,
+      severity: 'critical' as const,
+      title: `قرار ينتظر إعادة الاختيار في ${s.ar}`,
+      detail: `رجعت لمحطة ${s.ar} عشان تصلّح «${fixAwaitingDecision(state.station[s.id])!.title}» — بس ما اخترت القرار الجديد للحين.`,
+      hint: 'ارجع للمحطة واختر القرار من جديد.',
+    })),
     ...(st.ethic && st.ethic !== 'consent' ? [{ id: 'gov-ethic', station: 'gov' as StationId, severity: 'critical' as const, fixStep: 3, title: 'قرار مشاركة أرقام العملاء بدون موافقتهم', detail: 'مخالف لنظام حماية البيانات الشخصية.' }] : []),
   ];
   const critical = issues.filter((i) => i.severity === 'critical');
@@ -142,7 +150,8 @@ export function Governance() {
   const allReviewed = !critical.length && warnings.every((w) => st.acks.includes(w.id)) && st.disclaimer;
   const fix = (i: Issue) => {
     if (i.station === 'gov') return set({ step: 3, ethic: null });
-    dispatch({ type: 'patchStation', id: i.station, patch: { step: i.fixStep ?? 0, ...FIX_PATCH[i.id], govFix: { id: i.id, title: i.title, hint: i.hint ?? '' } } });
+    if (i.id.startsWith('pending-')) return go(i.station);
+    dispatch({ type: 'patchStation', id: i.station, patch: { step: i.fixStep ?? 0, ...FIX_PATCH[i.id], govFix: { id: i.id, title: i.title, hint: i.hint ?? '', keys: Object.keys(FIX_PATCH[i.id] ?? {}) } } });
     go(i.station);
   };
   const cleanStations = STATIONS.filter((s) => !issues.some((i) => i.station === s.id));
@@ -218,7 +227,7 @@ export function Governance() {
           )}
           {st.step === 0 && (
             <div className="flex justify-end">
-              <Button variant="accent" disabled={!st.sensitive.length} onClick={checkCols}>
+              <Button variant="accent" disabled={!st.sensitive.length} why="اضغط على عناوين الأعمدة الحساسة" onClick={checkCols}>
                 تحقق
               </Button>
             </div>
@@ -314,7 +323,7 @@ export function Governance() {
           )}
           {st.step === 2 && (
             <div className="flex justify-end">
-              <Button variant="accent" disabled={st.qfix !== 'flag'} onClick={() => set({ step: 3 })} iconEnd="arrow">
+              <Button variant="accent" disabled={st.qfix !== 'flag'} why="اختر الحل الأنسب لمشكلة الجودة" onClick={() => set({ step: 3 })} iconEnd="arrow">
                 التالي: قرار صعب
               </Button>
             </div>
@@ -355,7 +364,7 @@ export function Governance() {
           )}
           {st.step === 3 && (
             <div className="flex justify-end">
-              <Button variant="accent" disabled={!st.ethic} onClick={() => set({ step: 4 })} iconEnd="arrow">
+              <Button variant="accent" disabled={!st.ethic} why="اختر قرارك" onClick={() => set({ step: 4 })} iconEnd="arrow">
                 التالي: المراجعة النهائية
               </Button>
             </div>

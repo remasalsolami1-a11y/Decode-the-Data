@@ -158,7 +158,7 @@ export function Governance() {
 
   const finish = () => {
     dispatch({ type: 'complete', id: 'gov', output: { sensitive: st.sensitive, approved: true } });
-    go(nextAfter('gov'));
+    go(nextAfter('gov', state.completed));
   };
 
   return (
@@ -486,7 +486,7 @@ export function Governance() {
         <StationOutro
           meta={meta}
           onContinue={finish}
-          nextLabel={nextLabelFor('gov')}
+          nextLabel={nextLabelFor('gov', state.completed)}
           output={
             <div>
               <div className="flex items-center gap-3 mb-2">

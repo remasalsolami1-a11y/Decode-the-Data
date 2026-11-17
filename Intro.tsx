@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CHARACTERS, OWNER, STATIONS } from './stations';
+import { CHARACTERS, OWNER, STATIONS, stationById } from './stations';
 import { Avatar } from './Avatar';
 import { firstName, isUnlocked, Mode, STATION_ORDER, useStore } from './store';
 import { Icon } from './Icon';
@@ -346,7 +346,7 @@ export function JourneyMap() {
         <div>
           <div className="text-sm font-semibold text-ink-500 mb-2">خريطة الرحلة</div>
           <h1 className="text-3xl sm:text-4xl font-bold">من بيانات فوضوية إلى نظام ذكي</h1>
-          <p className="text-ink-600 mt-2 text-lg">ست محطات متصلة. مخرج كل محطة هو مدخل المحطة اللي بعدها.</p>
+          <p className="text-ink-600 mt-2 text-lg">ست محطات متصلة — ابدأ بأي محطة تبيها، وتنقّل بينها بحرية. مخرج كل محطة يمشي للي بعدها.</p>
           <div className="mt-4 inline-flex rounded-xl border border-ink-200 bg-white p-1 text-sm" role="radiogroup" aria-label="نسخة الرحلة">
             {(
               [
@@ -372,7 +372,7 @@ export function JourneyMap() {
           </Button>
         ) : (
           <Button size="lg" iconEnd="arrow" onClick={() => go(nextUp!)}>
-            {state.completed.de ? 'أكمل المحطة التالية' : 'ابدأ المحطة الأولى'}
+            {STATION_ORDER.some((x) => state.completed[x]) ? `كمّل: ${stationById(nextUp!).ar}` : 'ابدأ من المحطة الأولى'}
           </Button>
         )}
       </div>
@@ -418,7 +418,7 @@ export function JourneyMap() {
                       <Icon name="check" size={13} stroke={3} /> مكتملة
                     </span>
                   )}
-                  {isNext && !done && <span className="text-xs font-bold rounded-full px-2 py-1 text-white" style={{ background: s.color }}>التالية</span>}
+                  {isNext && !done && <span className="text-xs font-bold rounded-full px-2 py-1 text-white" style={{ background: s.color }}>مقترحة</span>}
                 </div>
                 <p className="text-ink-600 text-[15px]">{s.verb}</p>
                 <div className="mt-3 pt-3 border-t border-ink-100 text-sm flex items-start gap-1.5">

@@ -104,7 +104,7 @@ export function MLEngineering() {
 
   const finish = () => {
     dispatch({ type: 'complete', id: 'ml', output: { features, trained: true } });
-    go(nextAfter('ml'));
+    go(nextAfter('ml', state.completed));
   };
 
   return (
@@ -447,7 +447,7 @@ export function MLEngineering() {
         <StationOutro
           meta={meta}
           onContinue={finish}
-          nextLabel={nextLabelFor('ml')}
+          nextLabel={nextLabelFor('ml', state.completed)}
           output={
             <div>
               <div className="text-2xl font-bold mb-3">نموذج تنبؤ يعمل + خاصية في التطبيق</div>

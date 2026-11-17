@@ -28,7 +28,7 @@ const topDays = (STATS: Stats) => [...STATS.byWeekday.map((v, i) => [v, i])].sor
 type Concl = 'right' | 'flat' | 'weekendLow' | 'promo';
 
 export function DataAnalysis() {
-  const { dispatch, go } = useStore();
+  const { state, dispatch, go } = useStore();
   const project = useProject();
   const DATA = project.clean.rows;
   const STATS = project.stats;
@@ -91,7 +91,7 @@ export function DataAnalysis() {
 
   const finish = () => {
     dispatch({ type: 'complete', id: 'da', output: { peakHour: STATS.peak.hour, busiestDay: STATS.busiestDay, conclusion: conclusions.find((c) => c.k === st.concl)?.t ?? conclusions[1].t } });
-    go(nextAfter('da'));
+    go(nextAfter('da', state.completed));
   };
 
   const weekendLift = Math.round((Math.max(...weekend.map((x) => x.value)) / Math.max(...work.map((x) => x.value)) - 1) * 100);
@@ -308,7 +308,7 @@ export function DataAnalysis() {
         <StationOutro
           meta={meta}
           onContinue={finish}
-          nextLabel={nextLabelFor('da')}
+          nextLabel={nextLabelFor('da', state.completed)}
           output={
             <div>
               <div className="text-2xl font-bold mb-3">تقرير أوقات الذروة وأنماط الطلب</div>

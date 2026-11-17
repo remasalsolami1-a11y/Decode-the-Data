@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { featuresTier, useProject, Project } from './project';
-import { AppState, useStore } from './store';
+import { AppState, STATION_ORDER, useStore } from './store';
 import { cx } from './ui';
 
 export interface Achievement {
@@ -35,7 +35,7 @@ export function earnedAchievements(state: AppState, p: Project): string[] {
   if (st('ds').featuresDone && featuresTier(p.d.ds) === 'best') out.push('selector');
   if (st('ml').snip === 'c' && st('ml').trained) out.push('builder');
   if (st('bi').planStaff != null && p.outcome.tier === 'best') out.push('decider');
-  if (state.completed.gov && st('gov').ethic === 'consent' && !p.audit.some((i) => i.severity === 'critical')) out.push('guardian');
+  if (STATION_ORDER.every((x) => state.completed[x]) && st('gov').ethic === 'consent' && !p.audit.some((i) => i.severity === 'critical')) out.push('guardian');
   if (state.boss.done) out.push('drift');
   if ((state.explored ?? []).length >= 3) out.push('deep');
   return out;

@@ -168,10 +168,9 @@ export function useStationState<T extends Record<string, unknown>>(id: StationId
 
 export const isFast = (state: AppState) => state.mode === 'workshop';
 
-export function isUnlocked(state: AppState, id: StationId) {
-  if (state.presenter) return true;
-  const i = STATION_ORDER.indexOf(id);
-  return i === 0 || !!state.completed[STATION_ORDER[i - 1]] || !!state.completed[id];
+/** stations are open in any order — a skipped station's decision falls back to the recommended one */
+export function isUnlocked(_state: AppState, _id: StationId) {
+  return true;
 }
 
 /** the participant's first name (for characters to address them), or '' */

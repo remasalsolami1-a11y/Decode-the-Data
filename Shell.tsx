@@ -48,8 +48,8 @@ export function Header() {
               return (
                 <li key={s.id}>
                   <button
-                    onClick={() => go('map')}
-                    title={`${s.num}. ${s.ar}${done ? ' — مكتملة' : ''}`}
+                    onClick={() => go(s.id)}
+                    title={`${s.num}. ${s.ar}${done ? ' — مكتملة' : ''} — اضغط للانتقال`}
                     aria-label={`${s.num}. ${s.ar}${done ? ' — مكتملة' : current ? ' — المحطة الحالية' : ''}`}
                     aria-current={current ? 'step' : undefined}
                     className={cx(
@@ -189,6 +189,7 @@ export function StationShell({ meta, children }: { meta: StationMeta; children: 
       <StationCtx.Provider value={meta.id}>
         <div className="max-w-4xl mx-auto px-4 mt-6 space-y-5">
           <GovFixBanner id={meta.id} />
+          <SkippedBanner id={meta.id} />
           <Explore id={meta.id} color={meta.color} />
           {children}
         </div>
@@ -411,12 +412,42 @@ export function StationOutro({ meta, output, onContinue, nextLabel }: { meta: St
   );
 }
 
-export function nextAfter(id: StationId) {
-  const i = STATION_ORDER.indexOf(id);
-  return i < 5 ? STATION_ORDER[i + 1] : 'system';
+/** where to go after finishing `id`: the next station not done yet (in order, wrapping round), else the finished system */
+/** jumped ahead? say which earlier stations still use the recommended decision, and offer a way back */
+function SkippedBanner({ id }: { id: StationId }) {
+  const { state, go } = useStore();
+  const skipped = STATION_ORDER.slice(0, STATION_ORDER.indexOf(id)).filter((s) => !state.completed[s]);
+  if (!skipped.length || state.completed[id]) return null;
+  return (
+    <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4 flex gap-3 items-start" role="note">
+      <Icon name="map" className="text-sky-600 shrink-0 mt-0.5" />
+      <div className="flex-1 text-sm text-ink-700 leading-relaxed">
+        <b className="text-ink-900">قفزت لهنا مباشرة؟ عادي.</b> المحطات اللي ما مريت عليها استخدمنا فيها القرار الموصى به، عشان تقدر تشتغل هنا. لما ترجع لها وتختار بنفسك، الأرقام هنا تتحدث تلقائيًا.
+        <div className="flex flex-wrap gap-2 mt-2">
+          {skipped.map((s) => {
+            const m = stationById(s);
+            return (
+              <button key={s} onClick={() => go(s)} className="inline-flex items-center gap-1.5 rounded-full bg-white border border-ink-200 px-3 py-1 text-xs font-bold hover:border-ink-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink-300">
+                <i className="w-2 h-2 rounded-full" style={{ background: m.color }} /> {m.ar}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
 }
-export function nextLabelFor(id: StationId) {
-  const n = nextAfter(id);
+
+export function nextAfter(id: StationId, completed: Partial<Record<StationId, boolean>> = {}) {
+  const i = STATION_ORDER.indexOf(id);
+  for (let k = 1; k < 6; k++) {
+    const s = STATION_ORDER[(i + k) % 6];
+    if (!completed[s]) return s;
+  }
+  return 'system';
+}
+export function nextLabelFor(id: StationId, completed: Partial<Record<StationId, boolean>> = {}) {
+  const n = nextAfter(id, completed);
   return n === 'system' ? 'شاهد النظام المكتمل' : `انتقل إلى ${stationById(n as StationId).ar}`;
 }
 

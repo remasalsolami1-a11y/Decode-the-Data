@@ -54,7 +54,7 @@ const WIDGETS: { id: WidgetId; label: string; desc: string }[] = [
 const SCHEDULED = 5;
 
 export function BusinessIntelligence() {
-  const { dispatch, go } = useStore();
+  const { state, dispatch, go } = useStore();
   const project = useProject();
   const [st, set] = useStationState('bi', {
     step: 0,
@@ -103,7 +103,7 @@ export function BusinessIntelligence() {
 
   const finish = () => {
     dispatch({ type: 'complete', id: 'bi', output: { kpis: st.kpis, decision: `${staffAr(st.planStaff ?? 0)} — ${st.planScope === 'evening' ? 'المساء' : 'اليوم كامل'}` } });
-    go(nextAfter('bi'));
+    go(nextAfter('bi', state.completed));
   };
 
   return (
@@ -404,7 +404,7 @@ export function BusinessIntelligence() {
         <StationOutro
           meta={meta}
           onContinue={finish}
-          nextLabel={nextLabelFor('bi')}
+          nextLabel={nextLabelFor('bi', state.completed)}
           output={
             <div>
               <div className="text-2xl font-bold mb-2">لوحة معلومات إدارية تعمل</div>

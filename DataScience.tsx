@@ -121,7 +121,7 @@ export function DataScience() {
 
   const finish = () => {
     dispatch({ type: 'complete', id: 'ds', output: { features, approach: 'combined' } });
-    go(nextAfter('ds'));
+    go(nextAfter('ds', state.completed));
   };
 
   const active = st.active;
@@ -391,7 +391,7 @@ export function DataScience() {
         <StationOutro
           meta={meta}
           onContinue={finish}
-          nextLabel={nextLabelFor('ds')}
+          nextLabel={nextLabelFor('ds', state.completed)}
           output={
             <div>
               <div className="text-2xl font-bold mb-3">ملف المشكلة والمنهج</div>

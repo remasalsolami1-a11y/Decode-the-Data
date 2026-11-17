@@ -38,7 +38,7 @@ export default function App() {
   // guard: a locked station (e.g. stale saved state) falls back to the map — never a dead end
   useEffect(() => {
     if ((STATION_ORDER as string[]).includes(screen) && !isUnlocked(state, screen as StationId)) go('map');
-    if ((screen === 'system' || screen === 'ramadan' || screen === 'career' || screen === 'done') && !state.completed.gov && !state.presenter) go('map');
+    if ((screen === 'system' || screen === 'ramadan' || screen === 'career' || screen === 'done') && !STATION_ORDER.every((s) => state.completed[s]) && !state.presenter) go('map');
   }, [screen, state, go]);
 
   let body: JSX.Element;

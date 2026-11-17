@@ -106,7 +106,7 @@ export function DataEngineering() {
 
   const finish = () => {
     dispatch({ type: 'complete', id: 'de', output: { missingStrategy: 'sameSlot', removed: 3 } });
-    go(nextAfter('de'));
+    go(nextAfter('de', state.completed));
   };
 
   const displayTime = (h: number) => (st.timeFmt === '12' ? fmtHour12Ar(h) : fmtHour24(h));
@@ -403,7 +403,7 @@ export function DataEngineering() {
         <StationOutro
           meta={meta}
           onContinue={finish}
-          nextLabel={nextLabelFor('de')}
+          nextLabel={nextLabelFor('de', state.completed)}
           output={
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-3">

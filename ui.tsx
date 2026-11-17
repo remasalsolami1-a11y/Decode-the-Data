@@ -18,7 +18,7 @@ export const Button = forwardRef<HTMLButtonElement, BtnProps & { why?: string }>
   const sizes = { sm: 'text-sm px-3 py-1.5', md: 'text-[15px] px-4 py-2.5', lg: 'text-lg px-6 py-3.5' }[size];
   const variants = {
     primary: 'bg-ink-900 text-white hover:bg-ink-800 focus-visible:ring-ink-300 shadow-card',
-    accent: 'bg-[var(--accent)] text-white hover:brightness-110 focus-visible:ring-[var(--accent)]/30 shadow-card',
+    accent: 'bg-[var(--accent,#1F2754)] text-white hover:brightness-110 focus-visible:ring-[var(--accent,#1F2754)]/30 shadow-card',
     secondary: 'bg-white text-ink-900 border border-ink-200 hover:border-ink-400 hover:bg-ink-50 focus-visible:ring-ink-200',
     ghost: 'text-ink-700 hover:bg-ink-100 focus-visible:ring-ink-200',
     dark: 'bg-white/10 text-white border border-white/20 hover:bg-white/20 focus-visible:ring-white/30',

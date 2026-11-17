@@ -20,6 +20,7 @@ import {
   parseCSV,
   parseXLSX,
   patterns,
+  toDate,
 } from './tabular';
 
 const BLUE = '#2F6BFF';
@@ -232,7 +233,7 @@ export function MyData() {
                         <span className="text-xs font-bold no-underline">{dup ? 'مكرر' : 'ناقص'}</span>
                         {[roles.date, roles.value, roles.category].map((c, j) => (
                           <span key={j} className={cx('truncate', c != null && row[c] == null && 'font-bold text-amber-700')}>
-                            {c == null ? '' : row[c] == null ? '؟' : String(row[c])}
+                            {c == null ? '' : row[c] == null ? '؟' : c === roles.date && toDate(row[c]) ? toDate(row[c])!.toISOString().slice(0, 10) : String(row[c])}
                           </span>
                         ))}
                       </div>
@@ -258,7 +259,7 @@ export function MyData() {
             )}
             {!cleaned ? (
               <div className="mt-5">
-                <Button variant="accent" icon="spark" onClick={() => setCleaned(true)}>
+                <Button variant="primary" size="lg" icon="spark" onClick={() => setCleaned(true)} style={{ background: CLUB_NAVY }}>
                   نظّف البيانات
                 </Button>
               </div>

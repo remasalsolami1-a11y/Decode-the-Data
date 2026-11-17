@@ -182,6 +182,19 @@ export function Landing() {
           </Button>
         </div>
       </section>
+
+      <section className="max-w-6xl mx-auto px-4 pb-4">
+        <button onClick={() => go('mydata')} className="w-full rounded-3xl p-6 text-right text-white flex flex-wrap items-center gap-4 hover:opacity-95 transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ink-300" style={{ background: CLUB_NAVY }}>
+          <span className="text-4xl" aria-hidden="true">📊</span>
+          <span className="flex-1 min-w-[220px]">
+            <span className="block font-bold text-xl">عندك ملف Excel؟ جرّب على بياناتك</span>
+            <span className="block text-white/70 mt-1">مصاريفك، مبيعات، حضور… نظّفه وشوف أنماطه وتوقع الشهر الجاي. الملف ما يطلع من جهازك.</span>
+          </span>
+          <span className="inline-flex items-center gap-2 rounded-xl bg-white text-ink-950 font-bold px-4 py-2.5">
+            جرّب الحين <Icon name="arrow" size={18} />
+          </span>
+        </button>
+      </section>
       <footer className="border-t border-ink-200/70 py-6 text-center text-sm text-ink-500">
         البيانات المستخدمة وهمية لأغراض تعليمية. · Decode the Data
       </footer>

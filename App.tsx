@@ -16,6 +16,7 @@ import { PresenterBar } from './Shell';
 import { GlossaryHost } from './Glossary';
 import { AchievementWatcher } from './Achievements';
 import { DashboardHost } from './MyDashboard';
+import { MyData } from './MyData';
 
 const STATION_COMPONENTS: Record<StationId, () => JSX.Element> = {
   de: DataEngineering,
@@ -55,6 +56,7 @@ export default function App() {
   else if (screen === 'system') body = <CompletedSystem />;
   else if (screen === 'career') body = <CareerDiscovery />;
   else if (screen === 'done') body = <Completion />;
+  else if (screen === 'mydata') body = <MyData />;
   else {
     const C = STATION_COMPONENTS[screen];
     body = <C key={screen} />;

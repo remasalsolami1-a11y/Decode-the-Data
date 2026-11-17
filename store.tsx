@@ -2,7 +2,7 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, 
 import type { FeatureId } from './model';
 
 export type StationId = 'de' | 'da' | 'ds' | 'ml' | 'bi' | 'gov';
-export type ScreenId = 'landing' | 'mission' | 'map' | StationId | 'system' | 'ramadan' | 'career' | 'done';
+export type ScreenId = 'landing' | 'mission' | 'map' | StationId | 'system' | 'ramadan' | 'career' | 'done' | 'mydata';
 export const SCREEN_ORDER: ScreenId[] = ['landing', 'mission', 'map', 'de', 'da', 'ds', 'ml', 'bi', 'gov', 'system', 'ramadan', 'career', 'done'];
 export type Mode = 'workshop' | 'full';
 export const STATION_ORDER: StationId[] = ['de', 'da', 'ds', 'ml', 'bi', 'gov'];

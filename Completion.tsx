@@ -171,6 +171,14 @@ export function Completion() {
             <Icon name="check" size={18} className="text-emerald-600 shrink-0 mt-0.5" /> جرّب مشروعًا صغيرًا على بيانات تهمك أنت — مثل مصاريفك أو نادٍ رياضي تتابعه.
           </li>
         </ul>
+        <button onClick={() => go('mydata')} className="mt-5 w-full rounded-2xl p-5 text-right text-white flex items-center gap-4 hover:opacity-95 transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ink-300" style={{ background: '#1F2754' }}>
+          <span className="text-3xl" aria-hidden="true">📊</span>
+          <span className="flex-1">
+            <span className="block font-bold text-lg">جرّب على بياناتك</span>
+            <span className="block text-sm text-white/70">ارفع ملف Excel لمصاريفك أو أي شي، وشوف نفس الخطوات عليه</span>
+          </span>
+          <Icon name="arrow" size={20} />
+        </button>
       </Card>
 
       <Modal open={confirm} title="تبدأ الرحلة من جديد؟" onClose={() => setConfirm(false)}>
